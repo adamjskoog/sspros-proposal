@@ -18,7 +18,7 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <a class="wordmark" href="#" aria-label="SSPros proposal home"><span class="mark" aria-hidden="true">s<span>p</span></span><span>SSPros<span class="wordmark-note">A proposal for the next chapter</span></span></a>
-    <nav aria-label="Main navigation"><a href="#opportunity">The opportunity</a><a href="#work-sample">Work sample</a><a href="#ai-pilot">What I’ve built</a><a href="#plan">90-day plan</a></nav>
+    <nav aria-label="Main navigation"><a href="#opportunity">The opportunity</a><a href="#work-sample">Work sample</a><a href="#ai-pilot">What I can do</a><a href="#plan">90-day plan</a></nav>
     <a class="header-cta" href="#conversation">Let’s talk <span aria-hidden="true">↗</span></a>
   </header>
   <main id="main">
@@ -29,49 +29,62 @@
         <p class="hero-lead">A paid role in Digital Operations &amp; AI Automation.</p>
         <p class="hero-body">I’ll own the website and the path from a customer’s first message to the team’s next action. Then I’ll automate the parts that pass testing. Every AI step is measured before it ships, and a person approves anything a customer sees.</p>
         <div class="actions"><a class="button primary" href="#ai-pilot">See what I’ve built <span aria-hidden="true">↓</span></a><a class="text-link" href="#plan">Explore my first 90 days <span aria-hidden="true">↗</span></a></div>
-        <div class="hero-caption"><strong>Built before day one:</strong> a working AI triage pipeline, tested against 40 hand-labeled inquiries, with the code and results published.</div>
+        <div class="hero-caption"><strong>Built before day one:</strong> a working AI tool that sorts customer messages, checked against 40 practice messages, with every result published.</div>
       </div>
-      <div class="system-map" aria-label="Proposed workflow: structured capture, rule-based triage, and human approval.">
-        <div class="map-heading">How the workflow runs</div>
-        <div class="map-node"><span class="node-symbol" aria-hidden="true">↙</span><div><small>1. Capture</small><strong>A customer reaches out.</strong><p>Service · location · timing, extracted to a fixed schema</p></div></div>
-        <div class="connector" aria-hidden="true"></div>
-        <div class="map-node highlighted"><span class="node-symbol" aria-hidden="true">↗</span><div><small>2. Triage</small><strong>The next step is clear.</strong><p>Route · urgency · missing details · draft reply</p></div></div>
-        <div class="connector" aria-hidden="true"></div>
-        <div class="map-node"><span class="node-symbol" aria-hidden="true">✓</span><div><small>3. Approve</small><strong>The team stays in control.</strong><p>Review · send · log every correction</p></div></div>
+      <div class="system-map" id="flow" role="region" aria-labelledby="flow-heading">
+        <div class="map-top"><div class="map-heading" id="flow-heading">See how one customer message is handled</div></div><p class="flow-hint">Tap an example below to watch it step by step.</p>
+        <div class="flow-picker" role="group" aria-label="Choose an example message"><button type="button" data-flow="quote" aria-pressed="true">Asking for a quote</button><button type="button" data-flow="missing" aria-pressed="false">Details left out</button><button type="button" data-flow="urgent" aria-pressed="false">Emergency</button></div>
+        <div class="flow-message"><small>A made-up message from the website</small><p id="flow-text">“We’re planning an office build-out in Tampa next quarter and need power and data cabling. We can share the floor plan.”</p></div>
+        <ol class="flow-steps">
+          <li class="map-node is-done" data-step="capture"><span class="node-symbol" aria-hidden="true">↙</span><div><small>Step 1 · Read</small><strong>The key details are picked out.</strong><dl class="flow-chips" id="flow-capture"><div><dt>Service</dt><dd>Power + data cabling</dd></div><div><dt>Location</dt><dd>Tampa</dd></div><div><dt>Timing</dt><dd>Next quarter</dd></div></dl></div></li>
+          <li class="map-node is-done" data-step="triage"><span class="node-symbol" aria-hidden="true">↗</span><div><small>Step 2 · Sort</small><strong id="flow-triage-title">The next step is clear.</strong><dl class="flow-chips" id="flow-triage"><div><dt>Goes to</dt><dd>Estimator</dd></div><div><dt>Urgency</dt><dd>Routine</dd></div><div><dt>Missing</dt><dd>Nothing</dd></div></dl></div></li>
+          <li class="map-node is-done" data-step="approve"><span class="node-symbol" aria-hidden="true">✓</span><div><small>Step 3 · Approve</small><strong id="flow-approve-title">A person signs off.</strong><p id="flow-approve-text">Draft reply ready. Nothing is sent until someone on the team approves it.</p><button type="button" class="flow-approve" id="flow-approve">Approve the draft <span aria-hidden="true">→</span></button></div></li>
+        </ol>
+        <p class="flow-status" id="flow-status" role="status"></p>
         <div class="map-footer"><span class="status-dot" aria-hidden="true"></span> Emergencies always go straight to a person</div>
       </div>
     </section>
-    <nav class="scope-strip" aria-label="The starting scope"><div class="section-wrap"><span class="scope-label">The starting scope</span><a href="#opportunity"><strong>Website clarity</strong><small>Make the website easy to understand</small><span class="scope-arrow" aria-hidden="true">↓</span></a><a href="#work-sample"><strong>Inquiry follow-through</strong><small>Turn every customer message into a next step</small><span class="scope-arrow" aria-hidden="true">↓</span></a><a href="#ai-pilot"><strong>Tested AI automation</strong><small>Let AI help, but only after it passes a test</small><span class="scope-arrow" aria-hidden="true">↓</span></a></div></nav>
+    <nav class="scope-strip" aria-label="The starting scope"><div class="section-wrap"><span class="scope-label">Where I’d start</span><a href="#opportunity"><strong>Website clarity</strong><small>Make the website easy to understand</small><span class="scope-arrow" aria-hidden="true">↓</span></a><a href="#work-sample"><strong>Inquiry follow-through</strong><small>Turn every customer message into a next step</small><span class="scope-arrow" aria-hidden="true">↓</span></a><a href="#ai-pilot"><strong>Careful use of AI</strong><small>Let AI help, but only after it passes a test</small><span class="scope-arrow" aria-hidden="true">↓</span></a></div></nav>
 
     <section id="opportunity" class="section-wrap section-space">
-      <div class="section-heading"><p class="eyebrow">01 / THE OPPORTUNITY</p><div><h2>Build on what’s there. <br>Make the next step easier.</h2><p>My review of the public site found 38 actions. I’d start with the three that make the business easier to understand and the work easier to maintain.</p></div></div>
+      <div class="section-heading"><p class="eyebrow">01 / THE OPPORTUNITY</p><div><h2>Build on what’s there. <br>Make the next step easier.</h2><p>The work already speaks for itself. The website just needs to carry it. My review of the public site found 38 possible actions. These three come first because they’re small, visible, and make every later improvement easier.</p></div></div>
+      <div class="funnel" aria-label="From 38 actions to 3 starting points"><div><strong>24</strong><span>sections reviewed</span></div><span class="funnel-arrow" aria-hidden="true">→</span><div><strong>38</strong><span>actions found</span></div><span class="funnel-arrow" aria-hidden="true">→</span><div class="funnel-pick"><strong>3</strong><span>to start with</span></div><a class="text-link" href="downloads/SSPros-Website-and-Office-Proposal.pdf" target="_blank" rel="noopener">Read the full review ↗</a></div>
       <div class="opportunity-list">
-        <article><span class="row-number">01</span><div><h3>Give customers a clear route.</h3><p>Service-specific pages explain the work, the information needed, and how to start the right inquiry.</p></div><div class="observation"><span class="label">ON THE SITE TODAY</span><p>The homepage’s service links all lead to one shared services page.</p><a href="https://sspro.us/" target="_blank" rel="noopener noreferrer">Homepage ↗</a></div></article>
-        <article><span class="row-number">02</span><div><h3>Make the public story consistent.</h3><p>One approved facts register gives every page the same source for coverage, experience, and project proof.</p></div><div class="observation"><span class="label">ON THE SITE TODAY</span><p>The homepage says 50+ completed projects; the About page says 500+.</p><a href="https://sspro.us/about" target="_blank" rel="noopener noreferrer">About page ↗</a></div></article>
-        <article><span class="row-number">03</span><div><h3>Turn every inquiry into a handoff.</h3><p>Capture the project location, flag missing details, and give each open request an owner and a next action.</p></div><div class="observation"><span class="label">ON THE SITE TODAY</span><p>The contact form has no field for the project location, so every estimate starts with a follow-up question.</p><a href="https://sspro.us/contact" target="_blank" rel="noopener noreferrer">Contact page ↗</a></div></article>
+        <article class="opp" data-view="today"><span class="row-number">01</span><div><h3>Give customers a clear route.</h3><p>Each service gets its own page: what the work involves, what to send, and a link to start the right inquiry.</p><p class="opp-why"><strong>Why it matters:</strong> customers find their job faster, and inquiries arrive already sorted by service.</p></div>
+          <div class="observation"><div class="view-toggle" role="group" aria-label="Compare item 1"><button type="button" data-view="today" aria-pressed="true">Today</button><button type="button" data-view="proposed" aria-pressed="false">After the fix</button></div>
+            <div class="view view-today"><div class="viz route-viz" aria-hidden="true"><span>Service link</span><span>Service link</span><span>Service link</span><i></i><b>One shared services page</b></div><p>The homepage’s service links all lead to one shared services page.</p><a href="https://sspro.us/" target="_blank" rel="noopener noreferrer">See the homepage ↗</a></div>
+            <div class="view view-proposed"><div class="viz route-viz split" aria-hidden="true"><span>Service</span><span>Service</span><span>Service</span><i></i><b>Its own page</b><b>Its own page</b><b>Its own page</b></div><p>Every link lands on a matching page with the scope, the details to send, and a contact form already set to that service.</p></div></div></article>
+        <article class="opp" data-view="today"><span class="row-number">02</span><div><h3>Make the public story consistent.</h3><p>One approved facts sheet becomes the single source for coverage, experience, and project counts on every page.</p><p class="opp-why"><strong>Why it matters:</strong> a mismatched number makes a careful buyer doubt the rest of the site.</p></div>
+          <div class="observation"><div class="view-toggle" role="group" aria-label="Compare item 2"><button type="button" data-view="today" aria-pressed="true">Today</button><button type="button" data-view="proposed" aria-pressed="false">After the fix</button></div>
+            <div class="view view-today"><div class="viz count-viz" aria-hidden="true"><div><strong>50+</strong><span>Homepage</span></div><em>≠</em><div><strong>500+</strong><span>About page</span></div></div><p>The homepage says 50+ completed projects; the About page says 500+.</p><a href="https://sspro.us/about" target="_blank" rel="noopener noreferrer">See the About page ↗</a></div>
+            <div class="view view-proposed"><div class="viz count-viz agreed" aria-hidden="true"><div><strong>✓</strong><span>Homepage</span></div><em>=</em><div><strong>✓</strong><span>About page</span></div></div><p>The company confirms the real figure once. Every page uses it, and the facts sheet records where it came from.</p></div></div></article>
+        <article class="opp" data-view="today"><span class="row-number">03</span><div><h3>Turn every message into a clear next step.</h3><p>Ask for the project location, flag anything missing, and give each open request an owner and a next action.</p><p class="opp-why"><strong>Why it matters:</strong> the first reply can move the job forward instead of asking where it is.</p></div>
+          <div class="observation"><div class="view-toggle" role="group" aria-label="Compare item 3"><button type="button" data-view="today" aria-pressed="true">Today</button><button type="button" data-view="proposed" aria-pressed="false">After the fix</button></div>
+            <div class="view view-today"><ul class="viz form-viz" aria-hidden="true"><li>Name</li><li>Email</li><li>Service type</li><li>Details</li><li>Timeline</li><li class="gap">Project location: not asked</li></ul><p>The contact form doesn’t ask where the project is, so every estimate starts with a follow-up question.</p><a href="https://sspro.us/contact" target="_blank" rel="noopener noreferrer">See the contact page ↗</a></div>
+            <div class="view view-proposed"><ul class="viz form-viz" aria-hidden="true"><li>Name</li><li>Best way to reply</li><li>Service type</li><li class="added">City or ZIP</li><li>Details</li><li>Timing (optional)</li></ul><p>One added field, a clear “what happens next” message, and an owner assigned the moment it arrives.</p></div></div></article>
       </div>
     </section>
 
     <section id="work-sample" class="demo-section">
       <div class="section-wrap section-space">
-        <div class="section-heading"><p class="eyebrow">02 / WORK SAMPLE</p><div><h2>From an inquiry <br>to an actionable handoff.</h2><p id="demo-intro">Pick a request and see the structured handoff the pipeline produces for the team to review.</p></div></div>
-        <div class="demo-toolbar"><span class="demo-badge"><span class="status-dot" aria-hidden="true"></span> <span id="demo-mode">Interactive prototype</span></span><span id="demo-source">Fictional inquiries · nothing is sent</span></div>
+        <div class="section-heading"><p class="eyebrow">02 / WORK SAMPLE</p><div><h2>From a customer message <br>to a clear next step.</h2><p id="demo-intro">Pick a message and see the summary the tool prepares for the team to check.</p></div></div>
+        <div class="demo-toolbar"><span class="demo-badge"><span class="status-dot" aria-hidden="true"></span> <span id="demo-mode">Try it yourself</span></span><span id="demo-source">Made-up messages · nothing is sent</span></div>
         <div class="demo-workspace">
           <div class="request-pane">
-            <label class="label" for="scenario">SELECT A SAMPLE INQUIRY</label>
+            <label class="label" for="scenario">PICK AN EXAMPLE MESSAGE</label>
             <select id="scenario"><option value="commercial">Commercial build-out</option><option value="missing">Request with missing details</option><option value="urgent">Urgent electrical concern</option></select>
-            <div class="message-top"><span class="avatar" aria-hidden="true">↙</span><div><strong id="sample-title">Commercial build-out</strong><span>Fictional website inquiry</span></div></div>
+            <div class="message-top"><span class="avatar" aria-hidden="true">↙</span><div><strong id="sample-title">Commercial build-out</strong><span>Made-up website message</span></div></div>
             <blockquote id="sample-message">“We’re planning an office build-out in Tampa and need help with power and data cabling. We’re aiming for next quarter. We can share the floor plan. Email is best.”</blockquote>
-            <p class="sample-note" id="sample-note">Preset example. Real model outputs appear here after the evaluation runs.</p>
-            <button id="prepare" class="button primary" type="button">Prepare the handoff <span aria-hidden="true">→</span></button>
+            <p class="sample-note" id="sample-note">Example message. Real AI results appear here once the test has run.</p>
+            <button id="prepare" class="button primary" type="button">Sort this message <span aria-hidden="true">→</span></button>
           </div>
           <div class="result-pane" aria-live="polite" aria-atomic="true">
-            <div id="demo-empty" class="demo-empty"><span class="empty-glyph" aria-hidden="true">↗</span><h3>One request. A clear next action.</h3><p>Prepare the handoff to see the structured summary and the review it needs.</p><span class="mini-label">Capture → Triage → Approve</span></div>
+            <div id="demo-empty" class="demo-empty"><span class="empty-glyph" aria-hidden="true">↗</span><h3>One request. A clear next action.</h3><p>Press “Sort this message” to see the summary the team would get.</p><span class="mini-label">Read → Sort → Approve</span></div>
             <div id="demo-result" hidden>
-              <div class="result-heading"><span class="label">PREPARED HANDOFF</span><span id="review-badge" class="review-badge">Team review needed</span></div>
-              <dl class="handoff-facts"><div><dt>Service</dt><dd id="result-service"></dd></div><div><dt>Location</dt><dd id="result-location"></dd></div><div><dt>Timing</dt><dd id="result-timing"></dd></div><div><dt>Route</dt><dd id="result-owner"></dd></div></dl>
-              <div class="next-action"><span class="label">NEXT ACTION</span><p id="result-action"></p></div>
-              <div class="draft"><span id="draft-label" class="label">RESPONSE DRAFT · NOT SENT</span><p id="result-draft"></p></div>
+              <div class="result-heading"><span class="label">SUMMARY FOR THE TEAM</span><span id="review-badge" class="review-badge">Team review needed</span></div>
+              <dl class="handoff-facts"><div><dt>Service</dt><dd id="result-service"></dd></div><div><dt>Location</dt><dd id="result-location"></dd></div><div><dt>Timing</dt><dd id="result-timing"></dd></div><div><dt>Goes to</dt><dd id="result-owner"></dd></div></dl>
+              <div class="next-action"><span class="label">NEXT STEP</span><p id="result-action"></p></div>
+              <div class="draft"><span id="draft-label" class="label">DRAFT REPLY · NOT SENT</span><p id="result-draft"></p></div>
               <p id="result-review" class="review-note"></p>
               <button id="copy-draft" type="button" class="text-button">Copy draft <span aria-hidden="true">↗</span></button><span id="copy-status" class="copy-status" role="status"></span>
             </div>
@@ -81,13 +94,21 @@
     </section>
 
     <section id="ai-pilot" class="section-wrap section-space">
-      <div class="section-heading"><p class="eyebrow">03 / WHAT I CAN ALREADY DO</p><div><h2>New to the trade. <br>Already building with AI.</h2><p>I don’t know the electrical business yet, and I won’t pretend to. What I can bring from day one is building and testing AI tools quickly. To show it, I built the first piece before asking for the job: a step that reads a customer message, sorts it, and drafts a reply for a person to approve.</p></div></div>
+      <div class="section-heading"><p class="eyebrow">03 / WHAT I CAN ALREADY DO</p><div><h2>New to the trade. <br>Not new to building.</h2><p>I don’t know the electrical business yet, and I won’t pretend to. What I bring is the ability to spot where the office loses time, build the fix, and prove it works before anyone depends on it. Everything below already exists, and you can open any of it.</p></div></div>
+
+      <ol class="skills-grid">
+        <li><span class="skill-num">01</span><h3>Audit a website and rank the fixes.</h3><p class="skill-proof"><strong>Done:</strong> a 24-section review of the public site with 38 prioritized actions.</p><p class="skill-use"><strong>For SSPros:</strong> a ranked list to work through from day one, not a pile of opinions.</p><a class="text-link" href="downloads/SSPros-Website-and-Office-Proposal.pdf" target="_blank" rel="noopener">Open the review ↗</a></li>
+        <li><span class="skill-num">02</span><h3>Build AI tools that are tested before they’re trusted.</h3><p class="skill-proof"><strong>Done:</strong> an inquiry triage tool and a 40-case test that grades every answer.</p><p class="skill-use"><strong>For SSPros:</strong> inquiries arrive sorted with a draft reply, and a person still approves each one.</p><a class="text-link" href="#eval-panel">See the test results ↓</a></li>
+        <li><span class="skill-num">03</span><h3>Turn loose ends into simple routines.</h3><p class="skill-proof"><strong>Done:</strong> 8 ready-to-use office templates and an editable toolkit.</p><p class="skill-use"><strong>For SSPros:</strong> estimate follow-ups and inquiry tracking that don’t depend on anyone’s memory.</p><a class="text-link" href="downloads/sspros-office-templates.zip" download>Download the templates ↓</a></li>
+        <li><span class="skill-num">04</span><h3>Make the website changes myself.</h3><p class="skill-proof"><strong>Done:</strong> this site, written, coded, and published with AI-assisted development.</p><p class="skill-use"><strong>For SSPros:</strong> website changes that actually go live, not just get suggested.</p><a class="text-link" href="https://github.com/adamjskoog/sspros-proposal" target="_blank" rel="noopener noreferrer">See how this site was built ↗</a></li>
+      </ol>
 
       <div class="eval-panel" id="eval-panel">
-        <div class="eval-head"><div><span class="label">HOW IT DID ON A 40-MESSAGE PRACTICE TEST</span><p id="eval-meta">40 practice inquiries, each checked against the right answer</p></div><a class="text-link" href="https://github.com/adamjskoog/sspros-proposal/tree/main/eval" target="_blank" rel="noopener noreferrer">See the code &amp; full results ↗</a></div>
-        <div class="eval-grid proof-grid" id="eval-grid">
+        <div class="eval-head"><div><span class="label">THE AI TOOL, PUT TO THE TEST</span><p id="eval-meta">40 practice inquiries, each checked against the right answer</p></div><a class="text-link" href="https://github.com/adamjskoog/sspros-proposal/tree/main/eval" target="_blank" rel="noopener noreferrer">See the code &amp; full results ↗</a></div>
+        <div class="eval-grid" id="eval-grid">
           <p class="eval-pending" id="eval-pending">The practice test is built. Results appear here after the first full run.</p>
         </div>
+        <div class="hard-cases" id="hard-cases" hidden><span class="label">TRY THE HARD CASES IT HAD TO GET RIGHT</span><div class="case-chips" id="case-chips"></div></div>
       </div>
 
       <div class="proof-columns">
@@ -104,7 +125,23 @@
       <div class="scorecard"><h3>Four measures worth watching.</h3><div><strong>Response time</strong><p>Median time from receipt to the first human response.</p></div><div><strong>Handoff completeness</strong><p>Share of requests that arrive with the essential details.</p></div><div><strong>Follow-up coverage</strong><p>Open requests with an owner and a dated next action.</p></div><div><strong>Handling effort</strong><p>Minutes per request, including review and corrections.</p></div></div>
     </section>
 
-    <section class="value-section"><div class="section-wrap value-layout"><div><p class="eyebrow">MAKE THE VALUE TANGIBLE</p><h2>Start with time <br>the team can get back.</h2><p>Change the assumptions to see how a small saving on every request adds up. The baseline in the first 30 days replaces these guesses with real numbers.</p></div><form id="value-form" class="value-calculator"><div class="calculator-inputs"><div><label for="requests">Requests per week</label><input id="requests" name="requests" aria-describedby="value-error" type="number" min="0" max="10000" step="1" value="20" inputmode="numeric" required></div><div><label for="minutes">Net minutes saved per request</label><input id="minutes" name="minutes" aria-describedby="value-error" type="number" min="0" max="120" step="1" value="8" inputmode="numeric" required></div></div><div class="value-result" aria-live="polite"><output id="hours" for="requests minutes">10.7</output><span>hours per 4-week period</span></div><p id="value-formula">20 requests × 8 minutes × 4 weeks ÷ 60</p><p id="value-cost" hidden></p><p id="value-error" class="value-error" role="status" hidden>Enter whole numbers: 0–10,000 requests and 0–120 minutes.</p></form></div></section>
+    <section class="value-section"><div class="section-wrap value-layout"><div class="value-intro"><p class="eyebrow">MAKE THE VALUE TANGIBLE</p><h2>Start with time <br>the team can get back.</h2><p>A few minutes saved on each request doesn’t sound like much. Across a year it adds up to weeks of someone’s time. Set the numbers to match your office and see what it’s worth.</p><p class="value-honest"><strong>These are starting guesses.</strong> In the first 30 days I measure the real numbers, and they replace these.</p></div>
+      <form id="value-form" class="value-calculator" novalidate>
+        <div class="calc-row"><label for="requests">Customer requests per week</label><output id="requests-out" for="requests">20</output></div>
+        <input id="requests" name="requests" type="range" min="1" max="100" step="1" value="20">
+        <fieldset class="savers"><legend>Where the minutes come from <small>(per request)</small></legend>
+          <label><input type="checkbox" name="saver" value="4" checked><span>Reply drafted and ready to review</span><b>+4 min</b></label>
+          <label><input type="checkbox" name="saver" value="3" checked><span>Missing details flagged up front</span><b>+3 min</b></label>
+          <label><input type="checkbox" name="saver" value="2" checked><span>Sent to the right person automatically</span><b>+2 min</b></label>
+          <label><input type="checkbox" name="saver" value="1"><span>Follow-up reminder set for every open request</span><b>+1 min</b></label>
+          <p class="saver-review"><span>Minus time to check each draft</span><b>−1 min</b></p>
+          <p class="saver-net"><span>Net saved per request</span><b id="net-minutes">8 min</b></p>
+        </fieldset>
+        <div class="calc-row"><label for="rate">What an hour of office time costs <small>(change it)</small></label><span class="rate-field"><span aria-hidden="true">$</span><input id="rate" name="rate" type="number" min="0" max="500" step="1" value="30" inputmode="numeric" aria-describedby="value-error"></span></div>
+        <div class="value-result" aria-live="polite"><div class="value-main"><output id="hours" for="requests rate">10.7</output><span>hours back every 4 weeks</span></div>
+          <dl class="value-stats"><div><dt>Per year</dt><dd id="hours-year">139 hours</dd></div><div><dt>Workdays</dt><dd id="days-year">17 days</dd></div><div><dt>Worth</dt><dd id="value-year">$4,160 / yr</dd></div><div><dt>AI cost</dt><dd id="ai-year">—</dd></div></dl></div>
+        <p id="value-formula">20 requests × 8 min × 52 weeks ÷ 60</p><p id="value-cost" hidden></p><p id="value-error" class="value-error" role="status" hidden>Enter an hourly cost between $0 and $500.</p>
+      </form></div></section>
 
     <section id="role" class="section-wrap section-space">
       <div class="section-heading"><p class="eyebrow">05 / THE ROLE</p><div><h2>One person to own <br>the follow-through.</h2><p class="role-title">Digital Operations &amp; AI Automation</p><p>A paid starting role. It begins with the website and inquiry follow-through and grows into automation wherever the evaluation supports it.</p></div></div>
@@ -117,6 +154,6 @@
     <section id="resources" class="section-wrap resources-section"><div><p class="eyebrow">THE SUPPORTING WORK</p><h2>Go a little deeper.</h2><p>The research, the code, and the templates behind this proposal.</p></div><div class="resource-list"><a href="brief.html" target="_blank" rel="noopener"><span><strong>The decision brief</strong><small>Role, starting scope &amp; review points · printable page</small></span><span aria-hidden="true">↗</span></a><a href="downloads/SSPros-Decision-Brief.pdf" download><span><strong>The decision brief (PDF)</strong><small>The same brief, ready to save, print, or forward · PDF</small></span><span aria-hidden="true">↓</span></a><a href="https://github.com/adamjskoog/sspros-proposal/tree/main/eval" target="_blank" rel="noopener noreferrer"><span><strong>The AI evaluation</strong><small>Pipeline, 40-case test set, grader, tests &amp; results · GitHub</small></span><span aria-hidden="true">↗</span></a><a href="downloads/SSPros-Website-and-Office-Proposal.pdf" target="_blank" rel="noopener"><span><strong>The website review</strong><small>24 sections and 38 prioritized actions · PDF</small></span><span aria-hidden="true">↗</span></a><a href="downloads/sspros-office-templates.zip" download><span><strong>The office templates</strong><small>8 planning CSVs and an editable toolkit · ZIP</small></span><span aria-hidden="true">↓</span></a></div></section>
   </main>
   <footer class="site-footer section-wrap"><div><strong>SSPros / The next chapter</strong><p>Independent proposal · November 2026</p></div><p>Ground rules: every example inquiry is fictional, the observations come from the public site on November 1, 2026, and nothing here connects to company systems. This is a proposal, not the company’s official website.</p><a href="#main">Back to top ↑</a></footer>
-  <noscript><div class="noscript">The proposal and 90-day plan read fine without JavaScript. The work sample, results panel, and calculator need it.</div></noscript>
+  <noscript><div class="noscript">The proposal and 90-day plan read fine without JavaScript. The live workflow, comparisons, work sample, results panel, and calculator need it.</div></noscript>
 </body>
 </html>
