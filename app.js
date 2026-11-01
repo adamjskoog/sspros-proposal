@@ -69,7 +69,7 @@ function setupDemo() {
   select.replaceChildren(...Object.entries(samples).map(([id, sample]) => new Option(sample.title, id)));
   $('demo-mode').textContent = 'Real AI results';
   $('demo-source').textContent = 'Saved from the practice test · ' + formatDate(results.meta.run_at);
-  $('demo-intro').textContent = 'These are real answers from the AI practice test, not scripted examples. Pick a tricky message and see exactly what the tool prepared.';
+  $('demo-intro').textContent = 'These are real answers from my practice test, using messages I made up. Labels like “Estimator” are my guesses. With your team, they’d match how your office actually works.';
   $('sample-note').textContent = 'Shown exactly as the AI wrote it and as it was graded (AI model: ' + results.meta.model + ').';
 }
 
@@ -206,104 +206,6 @@ function calculate() {
   }
 }
 
-/* ---------- Hero: one inquiry moving through the workflow ---------- */
-const FLOWS = {
-  quote: {
-    text: '“We’re planning an office build-out in Tampa next quarter and need power and data cabling. We can share the floor plan.”',
-    capture: [['Service', 'Power + data cabling'], ['Location', 'Tampa'], ['Timing', 'Next quarter']],
-    triageTitle: 'The next step is clear.',
-    triage: [['Goes to', 'Estimator'], ['Urgency', 'Routine'], ['Missing', 'Nothing']],
-    approveTitle: 'A person signs off.',
-    approveText: 'Draft reply ready. Nothing is sent until someone on the team approves it.',
-    canApprove: true
-  },
-  missing: {
-    text: '“I’m interested in getting a generator installed at my house. Can you send me a price?”',
-    capture: [['Service', 'Home standby generator'], ['Location', null], ['Timing', null]],
-    triageTitle: 'The gaps are flagged.',
-    triage: [['Goes to', 'Office intake'], ['Urgency', 'Routine'], ['Missing', 'City · timing']],
-    approveTitle: 'A person signs off.',
-    approveText: 'Draft asks for the city and timing. No price is guessed or promised.',
-    canApprove: true
-  },
-  urgent: {
-    text: '“There’s a burning smell near the electrical panel at our property. Can someone come today?”',
-    capture: [['Service', 'Reported hazard at a panel'], ['Location', null], ['Timing', 'Today']],
-    triageTitle: 'Flagged as an emergency.',
-    triage: [['Goes to', 'A person, right away'], ['Urgency', 'Emergency'], ['Queue', 'Skipped']],
-    approveTitle: 'No automated reply.',
-    approveText: 'It goes straight to a person through the urgent-contact procedure. No AI advice is given.',
-    canApprove: false
-  }
-};
-const FLOW_STEP_MS = 1100;
-const flowState = { key: 'quote', timers: [] };
-
-function chipList(pairs) {
-  return pairs.map(([label, value]) => {
-    const row = document.createElement('div');
-    const dt = document.createElement('dt');
-    const dd = document.createElement('dd');
-    dt.textContent = label;
-    dd.textContent = value || 'Not given';
-    if (!value) row.className = 'is-missing';
-    row.append(dt, dd);
-    return row;
-  });
-}
-
-function clearFlowTimers() {
-  flowState.timers.forEach(clearTimeout);
-  flowState.timers = [];
-}
-
-function renderFlow(key, animate) {
-  const flow = FLOWS[key];
-  const nodes = [...document.querySelectorAll('.flow-steps .map-node')];
-  flowState.key = key;
-  clearFlowTimers();
-  document.querySelectorAll('.flow-picker button').forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.flow === key)));
-  $('flow').classList.toggle('is-urgent', key === 'urgent');
-  $('flow-text').textContent = flow.text;
-  $('flow-capture').replaceChildren(...chipList(flow.capture));
-  $('flow-triage').replaceChildren(...chipList(flow.triage));
-  $('flow-triage-title').textContent = flow.triageTitle;
-  $('flow-approve-title').textContent = flow.approveTitle;
-  $('flow-approve-text').textContent = flow.approveText;
-  $('flow-approve').hidden = !flow.canApprove;
-  $('flow-approve').disabled = false;
-  $('flow-approve').innerHTML = 'Approve the draft <span aria-hidden="true">→</span>';
-  $('flow-status').textContent = '';
-
-  if (!animate) {
-    nodes.forEach(node => { node.classList.remove('is-active'); node.classList.add('is-done'); });
-    return;
-  }
-  nodes.forEach(node => node.classList.remove('is-done', 'is-active'));
-  nodes.forEach((node, i) => {
-    flowState.timers.push(setTimeout(() => {
-      nodes.forEach(n => n.classList.remove('is-active'));
-      node.classList.add('is-done', 'is-active');
-    }, FLOW_STEP_MS * (i + 1)));
-  });
-}
-
-/* The hero never moves on its own; it only animates after a visitor picks an example. */
-function setupFlow() {
-  const animate = !prefersReducedMotion();
-  document.querySelectorAll('.flow-picker button').forEach(btn => btn.addEventListener('click', () => {
-    renderFlow(btn.dataset.flow, animate);
-  }));
-  $('flow-approve').addEventListener('click', () => {
-    clearFlowTimers();
-    document.querySelectorAll('.flow-steps .map-node').forEach(n => { n.classList.remove('is-active'); n.classList.add('is-done'); });
-    $('flow-approve').disabled = true;
-    $('flow-approve').innerHTML = 'Approved by a person <span aria-hidden="true">✓</span>';
-    $('flow-status').textContent = 'Approved. In the real workflow the reply would now be sent and the correction log updated.';
-  });
-  renderFlow('quote', false);
-}
-
 /* ---------- Opportunity: today vs. proposed ---------- */
 function setupOpportunityToggles() {
   document.querySelectorAll('.opp').forEach(article => {
@@ -318,7 +220,6 @@ setupDemo();
 resetDemo();
 renderResults();
 calculate();
-setupFlow();
 setupOpportunityToggles();
 $('scenario').addEventListener('change', resetDemo);
 $('prepare').addEventListener('click', showHandoff);
