@@ -55,6 +55,7 @@ python run_eval.py --dry-run      # validate the dataset
 set ANTHROPIC_API_KEY=...         # macOS/Linux: export ANTHROPIC_API_KEY=...
 python run_eval.py                # full run, results/ + ../eval-results.js
 python run_eval.py --effort low   # compare cost and quality at lower effort
+python run_eval.py --site-from-latest  # rebuild ../eval-results.js from the last saved run, no model calls
 ```
 
 ### No API key? Use a Claude subscription

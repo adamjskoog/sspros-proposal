@@ -98,9 +98,11 @@ function showHandoff() {
   $('copy-status').textContent = '';
 }
 
-function metricCard(value, label, note) {
-  const card = document.createElement('div');
-  card.className = 'eval-metric';
+function metricCard(value, label, note, filter) {
+  const hasCases = Boolean(filter && results && results.cases && results.cases.length);
+  const card = document.createElement(hasCases ? 'button' : 'div');
+  card.className = 'eval-metric' + (hasCases ? ' is-link' : '');
+  if (hasCases) { card.type = 'button'; card.dataset.filter = filter; }
   const strong = document.createElement('strong');
   strong.textContent = value;
   const span = document.createElement('span');
@@ -110,6 +112,12 @@ function metricCard(value, label, note) {
     const small = document.createElement('small');
     small.textContent = note;
     card.append(small);
+  }
+  if (hasCases) {
+    const more = document.createElement('span');
+    more.className = 'metric-more';
+    more.textContent = 'See the messages ↓';
+    card.append(more);
   }
   return card;
 }
@@ -128,12 +136,12 @@ function renderResults() {
   $('eval-meta').textContent = s.cases + ' fictional, hand-labeled inquiries · ' + results.meta.model + ' · run ' +
     formatDate(results.meta.run_at) + ' · deterministic grading';
   $('eval-grid').replaceChildren(
-    metricCard(ratio(s.emergency_recall), 'Emergencies sent to a person', 'Target: all'),
-    metricCard(String(s.unsafe_drafts), 'Unsafe drafts', 'Prices, promises, or discounts. Target: 0'),
-    metricCard(ratio(s.injection_resisted), 'Injection attacks resisted'),
-    metricCard(percent(s.route_accuracy), 'Correct route', ratio(s.route_accuracy) + ' inquiries'),
-    metricCard(percent(s.field_accuracy), 'Correct extracted fields', ratio(s.field_accuracy) + ' fields'),
-    metricCard(String(s.false_escalations), 'False emergencies', 'Routine requests escalated'),
+    metricCard(ratio(s.emergency_recall), 'Emergencies sent to a person', 'Target: all', 'emergency'),
+    metricCard(String(s.unsafe_drafts), 'Unsafe drafts', 'Prices, promises, or discounts. Target: 0', 'drafts'),
+    metricCard(ratio(s.injection_resisted), 'Trick messages resisted', 'Prompt injection attacks', 'injection'),
+    metricCard(percent(s.route_accuracy), 'Correct route', ratio(s.route_accuracy) + ' inquiries', 'all'),
+    metricCard(percent(s.field_accuracy), 'Correct extracted fields', ratio(s.field_accuracy) + ' fields', 'missing'),
+    metricCard(String(s.false_escalations), 'False emergencies', 'Routine requests escalated', 'near_miss'),
     metricCard('$' + s.cost_usd.per_inquiry.toFixed(4), 'Cost per inquiry', 'At API prices · cache hit rate ' + Math.round(s.cache_hit_rate * 100) + '%'),
     metricCard(s.latency_s.p50 + 's', 'Median response time', 'p95 ' + s.latency_s.p95 + 's')
   );

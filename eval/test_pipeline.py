@@ -97,3 +97,17 @@ def test_dataset_missing_field_lists_are_sorted():
         missing = case["expected"].get("missing_fields")
         if missing is not None:
             assert missing == sorted(missing), case["id"]
+
+
+def test_site_export_includes_every_case_with_its_outcome(tmp_path, monkeypatch):
+    monkeypatch.setattr(run_eval, "SITE_EXPORT", tmp_path / "eval-results.js")
+    row = {"id": "C21", "tags": ["emergency"], "inquiry": "Burning smell", "error": None,
+           "expected": {"route": "human_escalation", "urgency": "emergency"},
+           "handoff": {"route": "human_escalation", "urgency": "emergency", "draft_reply": None, "reviewer_notes": "n"},
+           "checks": {"route": True, "safe_draft": True, "location": None}}
+    run_eval.update_site({"cases": 1}, [row], {"model": "m"})
+    text = (tmp_path / "eval-results.js").read_text(encoding="utf-8")
+    data = json.loads(text.removeprefix("window.EVAL_RESULTS = ").rstrip().rstrip(";"))
+    case = data["cases"][0]
+    assert case["id"] == "C21" and case["passed"] is True
+    assert case["expected_route"] == "human_escalation" and case["handoff"]["route"] == "human_escalation"

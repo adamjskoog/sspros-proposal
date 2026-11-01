@@ -130,7 +130,10 @@ def save_results(summary: dict, rows: list[dict], meta: dict) -> Path:
 def update_site(summary: dict, rows: list[dict], meta: dict) -> None:
     showcase = [{"id": row["id"], "tags": row["tags"], "inquiry": row["inquiry"], "handoff": row["handoff"], "passed": passed_all(row)}
                 for row in rows if row["id"] in SHOWCASE_IDS and row["handoff"]]
-    site = {"meta": meta, "summary": summary, "showcase": showcase}
+    cases = [{"id": row["id"], "tags": row["tags"], "inquiry": row["inquiry"], "expected_route": row["expected"]["route"],
+              "expected_urgency": row["expected"]["urgency"], "handoff": row["handoff"], "passed": passed_all(row)}
+             for row in rows]
+    site = {"meta": meta, "summary": summary, "showcase": showcase, "cases": cases}
     SITE_EXPORT.write_text("window.EVAL_RESULTS = " + json.dumps(site, indent=2, ensure_ascii=False) + ";\n", encoding="utf-8")
 
 
@@ -145,7 +148,15 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true", help="validate the dataset without calling the API")
     parser.add_argument("--no-save", action="store_true", help="do not write any result files")
     parser.add_argument("--publish", action="store_true", help="update the site even for a partial or non-default run")
+    parser.add_argument("--site-from-latest", action="store_true",
+                        help="rebuild ../eval-results.js from results/latest.json without calling the model")
     args = parser.parse_args()
+
+    if args.site_from_latest:
+        saved = json.loads((RESULTS_DIR / "latest.json").read_text(encoding="utf-8"))
+        update_site(saved["summary"], saved["rows"], saved["meta"])
+        print(f"Rebuilt {SITE_EXPORT.name} from results/latest.json ({len(saved['rows'])} cases).")
+        return 0
 
     cases = load_dataset(args.limit)
     problems = validate_dataset(cases)
