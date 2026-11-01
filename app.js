@@ -125,7 +125,7 @@ function percent(metric) {
 function renderResults() {
   if (!results) return;
   const s = results.summary;
-  $('eval-meta').textContent = s.cases + ' practice inquiries I wrote, each checked against the right answer · run ' +
+  $('eval-meta').textContent = s.cases + ' practice messages I wrote, each checked against the right answer · tested ' +
     formatDate(results.meta.run_at);
   const cards = [
     metricCard(ratio(s.all_checks_passed), 'Messages handled correctly', 'Sorted, details found, reply drafted'),
