@@ -2,7 +2,11 @@
 
 An independent hiring proposal prepared for discussion with System Solutions Pros. This is not the company's official website.
 
-The site contains a role proposal, an illustrative inquiry-handoff prototype, a 90-day work plan, and supporting downloads. The prototype uses fictional preset examples; it does not submit inquiries or connect to business systems.
+The site contains a role proposal for Digital Operations & AI Automation, a work sample, an AI evaluation, a 90-day plan, and supporting downloads. All inquiries are fictional, and nothing connects to business systems.
+
+## AI evaluation
+
+[`eval/`](eval/) holds a working AI inquiry-triage pipeline (Claude, structured outputs, prompt caching), a 40-case hand-labeled test set, a deterministic grader, and offline tests. `eval/run_eval.py` writes `eval-results.js`, which the site uses to show the metrics and the real model outputs in the work sample. See [`eval/README.md`](eval/README.md).
 
 ## Publishing
 
