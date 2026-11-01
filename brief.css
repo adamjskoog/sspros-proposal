@@ -46,19 +46,19 @@ th { width: 24%; background: var(--soft); }
 }
 @media print {
   @page { size: letter; margin: .65in; }
-  body { background: white; font-size: 12pt; line-height: 1.5; }
+  body { background: white; font-size: 14pt; line-height: 1.5; }
   .tools { display: none; }
   .page { margin: 0; padding: 0; max-width: none; }
-  h1 { font-size: 28pt; margin-block: 12pt 18pt; }
-  h2 { font-size: 16pt; margin: 18pt 0 9pt; break-after: avoid; }
-  .eyebrow, .small { font-size: 11pt; }
-  .lead { font-size: 15pt; }
+  h1 { font-size: 30pt; margin-block: 12pt 18pt; }
+  h2 { font-size: 18pt; margin: 18pt 0 9pt; break-after: avoid; }
+  .eyebrow, .small { font-size: 12pt; }
+  .lead { font-size: 17pt; }
   .grid { display: block; }
   .grid section { break-inside: avoid; }
   li { margin-block: 6pt; }
   .brief-sheet + .brief-sheet { break-before: page; margin: 0; padding: 0; border: 0; }
   .sheet-title { font-size: 22pt; margin-top: 0; }
-  table { display: table; font-size: 12pt; }
+  table { display: table; font-size: 14pt; }
   tbody { display: table-row-group; }
   tr { display: table-row; break-inside: avoid; }
   th, td { display: table-cell; padding: 10pt; width: auto; }
