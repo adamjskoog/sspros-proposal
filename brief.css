@@ -1,0 +1,70 @@
+﻿:root {
+  --paper: #f7f6f0;
+  --white: #fffefa;
+  --ink: #142c29;
+  --muted: #46564d;
+  --line: #c9d1c2;
+  --soft: #ebeee4;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 1.25rem/1.65 Arial, sans-serif; overflow-wrap: anywhere; }
+a { color: inherit; text-underline-offset: .25em; }
+a:focus-visible, button:focus-visible { outline: 3px solid #a94115; outline-offset: 5px; }
+.page { max-width: 64rem; margin: 2rem auto; padding: 3rem; background: var(--white); }
+.tools { max-width: 64rem; margin: 1.5rem auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-inline: 1.5rem; }
+.tools a, button { font: 600 1.125rem/1.5 Arial, sans-serif; min-height: 3.25rem; display: inline-flex; align-items: center; }
+button { padding: .875rem 1.25rem; background: var(--ink); color: #fff; border: 0; border-radius: 3px; cursor: pointer; }
+h1 { max-width: 22ch; font-size: clamp(2.25rem, 4vw, 2.75rem); line-height: 1.2; letter-spacing: -.03em; margin: 1rem 0 1.5rem; }
+h2 { font-size: 1.5rem; line-height: 1.4; margin: 2rem 0 1rem; }
+p { margin: 1rem 0; }
+.eyebrow { font-size: 1rem; color: var(--muted); }
+.lead { font-size: 1.5rem; line-height: 1.5; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+ul { padding-left: 1.25rem; }
+li { margin: .75rem 0; padding-left: .25rem; }
+.brief-sheet + .brief-sheet { margin-top: 2.5rem; padding-top: 2.5rem; border-top: 1px solid var(--line); }
+.sheet-title { font-size: 2rem; margin-top: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 1.125rem; }
+th, td { padding: 1.25rem; vertical-align: top; text-align: left; border-bottom: 1px solid var(--line); }
+th { width: 24%; background: var(--soft); }
+.ask { padding: 1.5rem; background: var(--soft); margin-top: 2rem; }
+.ask h2 { margin-top: 0; }
+.ask p { margin-bottom: 0; }
+.small { font-size: 1rem; color: var(--muted); margin-top: 1.5rem; }
+@media (max-width: 50rem) {
+  .page { margin: 1.25rem; padding: 2rem; }
+  .grid { grid-template-columns: 1fr; gap: 0; }
+}
+@media (max-width: 35rem) {
+  .page { margin: 0; padding: 1.5rem 1.25rem; }
+  .tools { padding-inline: 1.25rem; }
+  table, tbody, tr, th, td { display: block; width: 100%; }
+  th { padding: 1rem; }
+  td { padding: 1rem 0 1.5rem; }
+  .lead { font-size: 1.375rem; }
+  .ask { padding: 1.25rem; }
+}
+@media print {
+  @page { size: letter; margin: .65in; }
+  body { background: white; font-size: 12pt; line-height: 1.5; }
+  .tools { display: none; }
+  .page { margin: 0; padding: 0; max-width: none; }
+  h1 { font-size: 28pt; margin-block: 12pt 18pt; }
+  h2 { font-size: 16pt; margin: 18pt 0 9pt; break-after: avoid; }
+  .eyebrow, .small { font-size: 11pt; }
+  .lead { font-size: 15pt; }
+  .grid { display: block; }
+  .grid section { break-inside: avoid; }
+  li { margin-block: 6pt; }
+  .brief-sheet + .brief-sheet { break-before: page; margin: 0; padding: 0; border: 0; }
+  .sheet-title { font-size: 22pt; margin-top: 0; }
+  table { display: table; font-size: 12pt; }
+  tbody { display: table-row-group; }
+  tr { display: table-row; break-inside: avoid; }
+  th, td { display: table-cell; padding: 10pt; width: auto; }
+  th { width: 24%; }
+  .ask { padding: 12pt; margin-top: 18pt; break-inside: avoid; }
+  .ask h2 { margin-top: 0; }
+  .small { margin-top: 16pt; }
+  .page { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

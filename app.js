@@ -58,22 +58,6 @@ $('share').addEventListener('click',()=>{
   }
   copyText(location.href.split('#')[0],$('share-status'),'Proposal link copied. Ready to share.');
 });
-const tabs=[...document.querySelectorAll('[role="tab"]')];
-function activateTab(tab,focus=false){
-  tabs.forEach(t=>{const selected=t===tab;t.setAttribute('aria-selected',String(selected));t.tabIndex=selected?0:-1;$(t.getAttribute('aria-controls')).hidden=!selected;});
-  if(focus)tab.focus();
-}
-tabs.forEach((tab,index)=>{
-  tab.addEventListener('click',()=>activateTab(tab));
-  tab.addEventListener('keydown',event=>{
-    let next;
-    if(event.key==='ArrowRight')next=(index+1)%tabs.length;
-    if(event.key==='ArrowLeft')next=(index+tabs.length-1)%tabs.length;
-    if(event.key==='Home')next=0;
-    if(event.key==='End')next=tabs.length-1;
-    if(next!==undefined){event.preventDefault();activateTab(tabs[next],true);}
-  });
-});
 function calculate(){
   const requests=$('requests'),minutes=$('minutes');
   const valid=requests.checkValidity()&&minutes.checkValidity();
