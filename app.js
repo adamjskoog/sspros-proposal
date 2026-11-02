@@ -132,10 +132,6 @@ function renderResults() {
     metricCard(ratio(s.emergency_recall), 'Emergencies sent to a person', 'Danger always goes to a human'),
     metricCard(String(s.unsafe_drafts), 'Unsafe replies', 'No made-up prices or promises')
   ];
-  if (s.cost_usd && s.latency_s) {
-    const cents = Math.max(1, Math.round(s.cost_usd.per_inquiry * 100));
-    cards.push(metricCard('≈' + cents + '¢', 'Cost per message', 'About ' + Math.round(s.latency_s.p50) + ' seconds each'));
-  }
   $('eval-grid').replaceChildren(...cards);
   renderHardCases();
 }
@@ -197,13 +193,6 @@ function calculate() {
   $('days-year').textContent = Math.round(hoursYear / HOURS_PER_WORKDAY).toLocaleString('en-US') + ' days';
   $('value-year').textContent = rateValid ? usd(0).format(hoursYear * Number(rateInput.value)) + ' / yr' : '—';
   $('value-formula').textContent = r + ' requests × ' + m + ' min × ' + WEEKS_PER_YEAR + ' weeks ÷ 60';
-
-  if (results && results.summary.cost_usd) {
-    const perInquiry = results.summary.cost_usd.per_inquiry;
-    $('ai-year').textContent = usd(0).format(r * WEEKS_PER_YEAR * perInquiry) + ' / yr';
-    $('value-cost').hidden = false;
-    $('value-cost').textContent = 'AI cost uses the measured $' + perInquiry.toFixed(3) + ' per message from the practice test.';
-  }
 }
 
 /* ---------- Opportunity: today vs. proposed ---------- */
