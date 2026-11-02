@@ -202,6 +202,8 @@ select { width: 100%; min-height: 3.25rem; border: 1px solid #72816c; background
 .light { background: var(--lime); color: var(--ink); }
 .light:hover { background: #e2f7af; }
 .on-dark { color: var(--white); }
+.conversation-section .contact-line { color: var(--white); font-size: 1.15em; }
+.conversation-section .contact-line a { color: var(--white); font-weight: 700; text-underline-offset: .2em; white-space: nowrap; }
 .conversation-section .contact-note { font-size: var(--small); }
 .conversation-section .share-status { font-size: var(--small); color: var(--lime); margin-top: .5rem; overflow-wrap: anywhere; }
 .conversation-section a:focus-visible, .conversation-section button:focus-visible { outline-color: var(--lime); }
@@ -224,7 +226,6 @@ select { width: 100%; min-height: 3.25rem; border: 1px solid #72816c; background
 .site-footer a { min-height: 3rem; display: flex; align-items: center; }
 .skip-link { position: fixed; top: 0; left: 1rem; transform: translateY(-150%); z-index: 10; background: var(--lime); padding: .75rem 1rem; }
 .skip-link:focus { transform: translateY(0); }
-.noscript { padding: 1rem; text-align: center; background: #f5e8cb; font-size: var(--support); }
 
 @media (max-width: 70rem) {
   .section-wrap { width: calc(100% - 4rem); }
@@ -303,7 +304,7 @@ select { width: 100%; min-height: 3.25rem; border: 1px solid #72816c; background
   .phase-delivery { margin-top: 1rem; }
   .observation { margin-top: 1rem; }
   .conversation-section { background: white; color: var(--ink); padding-block: 1.5rem; }
-  .conversation-section h2, .conversation-section p, .conversation-section .eyebrow, .meeting-agenda > li > span { color: var(--ink); }
+  .conversation-section h2, .conversation-section p, .conversation-section .contact-line a, .conversation-section .eyebrow, .meeting-agenda > li > span { color: var(--ink); }
   .meeting-agenda { margin-top: 1rem; }
   .ownership-grid > div + div { margin-top: 1.5rem; }
   .proof-line { background: none; padding-inline: 0; }
