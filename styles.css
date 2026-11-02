@@ -363,6 +363,65 @@ select { width: 100%; min-height: 3.25rem; border: 1px solid #72816c; background
 .skills-grid strong { color: var(--ink); }
 .skill-use { padding-left: .875rem; border-left: 3px solid var(--lime); }
 .skills-grid .text-link { margin-top: auto; padding-top: 1rem; }
+.office-kit { margin-block: 3rem; border: 1px solid var(--line); background: var(--white); }
+.kit-heading { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 2rem; align-items: end; padding: 2rem; }
+.kit-heading h3 { font-size: 2rem; margin: .75rem 0 1rem; }
+.kit-heading p, .routine-body, .kit-download p { font-size: var(--support); }
+.kit-heading .eyebrow { font-size: var(--small); }
+.kit-note { border-left: 3px solid var(--lime); padding-left: 1rem; }
+.kit-routine { border-top: 1px solid var(--line); }
+.kit-routine summary { display: flex; gap: 1.25rem; align-items: baseline; padding: 1.5rem 2rem; cursor: pointer; list-style: none; }
+.kit-routine summary::-webkit-details-marker { display: none; }
+.kit-routine summary::after { content: '+'; margin-left: auto; flex-shrink: 0; font-size: 1.5rem; font-weight: 600; }
+.kit-routine[open] summary::after { content: '−'; }
+.kit-routine summary:hover { background: var(--soft); }
+.kit-routine summary:focus-visible { outline-offset: -4px; }
+.routine-number { font-size: var(--small); color: var(--forest); font-weight: 700; }
+.kit-routine summary strong { display: block; font-size: 1.5rem; line-height: 1.4; }
+.routine-description { display: block; margin-top: .375rem; font-size: var(--support); color: var(--muted); }
+.routine-body { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 2.5rem; padding: .5rem 2rem 2rem; }
+.routine-instructions > p + p { margin-top: .5rem; }
+.routine-instructions ol { padding-left: 1.3rem; margin-block: 1.25rem; }
+.routine-instructions li { padding-left: .25rem; margin-block: .75rem; color: var(--muted); }
+.routine-done { border-top: 1px solid var(--line); padding-top: 1rem; }
+.routine-done strong { color: var(--ink); }
+.routine-example { background: var(--soft); padding: 1.5rem; align-self: start; }
+.routine-example .example-context { font-size: var(--small); margin-top: .375rem; }
+.routine-example dl { margin: 1.25rem 0 0; }
+.routine-example dl > div { padding: .875rem 0; border-top: 1px solid var(--line); }
+.routine-example dt { font-weight: 700; color: var(--ink); }
+.routine-example dd { margin: .25rem 0 0; color: var(--muted); }
+.kit-download { border-top: 1px solid var(--line); padding: 2rem; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 2rem; background: var(--soft); }
+.kit-download h4 { font-size: 1.5rem; margin: 0 0 .75rem; }
+.kit-download .kit-file-note { font-size: var(--small); margin-top: .875rem; }
+.kit-actions { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; justify-content: center; }
+.kit-actions .button { width: 100%; }
+.eval-limit { color: #d5e0d7; font-size: var(--support); margin-top: 1.5rem; max-width: 85ch; }
+.section-next { margin-top: 2rem; padding-top: 1.75rem; border-top: 1px solid var(--line); }
+.section-next p { max-width: 75ch; margin-top: .75rem; }
+.section-next .text-link { margin-top: .75rem; }
+@media (max-width: 55rem) {
+  .kit-heading, .routine-body, .kit-download { grid-template-columns: 1fr; gap: 1.5rem; }
+  .kit-actions .button { width: auto; }
+}
+@media (max-width: 35rem) {
+  .kit-heading, .kit-download { padding: 1.25rem; }
+  .kit-routine summary { padding: 1.25rem; gap: .75rem; }
+  .kit-routine summary strong { font-size: 1.375rem; }
+  .routine-body { padding: .25rem 1.25rem 1.5rem; }
+  .routine-example { padding: 1.25rem; }
+  .kit-heading h3 { font-size: 1.75rem; }
+}
+@media print {
+  .office-kit { border: 0; }
+  .kit-heading, .kit-download, .routine-body { display: block; padding: 1rem 0; }
+  .kit-actions { display: none; }
+  .kit-routine summary { padding: 1rem 0; }
+  .kit-routine::details-content { content-visibility: visible; }
+  .kit-routine .routine-body { display: block; }
+  .routine-example { margin-top: 1rem; break-inside: avoid; }
+  .eval-limit { color: var(--ink); }
+}
 .hard-cases { margin-top: 2rem; }
 .hard-cases .label { color: var(--lime); display: block; margin-bottom: .75rem; }
 .case-chips { display: flex; flex-wrap: wrap; gap: .5rem; }

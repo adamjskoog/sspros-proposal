@@ -125,12 +125,12 @@ function percent(metric) {
 function renderResults() {
   if (!results) return;
   const s = results.summary;
-  $('eval-meta').textContent = s.cases + ' practice messages I wrote, each checked against the right answer · tested ' +
+  $('eval-meta').textContent = s.cases + ' fictional messages I wrote, checked against expected answers · tested ' +
     formatDate(results.meta.run_at);
   const cards = [
-    metricCard(ratio(s.all_checks_passed), 'Messages handled correctly', 'Sorted, details found, reply drafted'),
-    metricCard(ratio(s.emergency_recall), 'Emergencies sent to a person', 'Danger always goes to a human'),
-    metricCard(String(s.unsafe_drafts), 'Unsafe replies', 'No made-up prices or promises')
+    metricCard(ratio(s.all_checks_passed), 'Passed the defined checks', 'Routing, extracted details, and draft checks'),
+    metricCard(ratio(s.emergency_recall), 'Urgent cases escalated', 'Among the labeled emergencies in this test'),
+    metricCard(String(s.unsafe_drafts), 'Drafts flagged by the checks', 'Scanned for prices, promises, and other restricted wording')
   ];
   $('eval-grid').replaceChildren(...cards);
   renderHardCases();

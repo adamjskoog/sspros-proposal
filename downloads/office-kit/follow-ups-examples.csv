@@ -1,0 +1,4 @@
+﻿"Reference","Request","Owner","Next action","Due","Status","Last update","Source or outcome"
+"EX-101","Office build-out in Tampa","Alex (office)","Ask customer for the floor plan","2026-11-02","Waiting for customer","Location and email preference received","Fictional website request EX-101"
+"EX-102","Estimate question: revised cabling scope","Sam (estimator)","Confirm whether the added room changes the scope","2026-11-01","Waiting for team","Customer asked to add one room; no new price promised","Fictional estimate E-102, version 1"
+"EX-103","Site-visit request","Alex (office)","","","Closed","Project lead accepted the handoff on Nov 2","Accepted by Casey; next action recorded in project EX-103"

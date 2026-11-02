@@ -14,4 +14,8 @@ This is a buildless static site. In GitHub repository settings, open **Pages** a
 
 Open `index.html` for the website or `brief.html` for the printable decision brief. All asset links are relative so the site can run under a GitHub Pages project path.
 
+## Office routines
+
+Section 3 previews three routines: customer follow-up, website updates, and a weekly handoff. [`downloads/office-kit/START-HERE.html`](downloads/office-kit/START-HERE.html) contains the guide and fictional examples. The Excel workbook has blank working tabs, dropdowns, and calculated follow-up flags. The ZIP includes the workbook, CSV alternatives, guide, and message drafts. See [`toolkit/README.md`](toolkit/README.md) for the shared source and rebuild instructions.
+
 Search indexing is discouraged using robots metadata; this does not restrict public access.

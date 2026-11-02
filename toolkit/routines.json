@@ -1,0 +1,104 @@
+[
+  {
+    "id": "follow-ups",
+    "name": "Customer follow-up",
+    "sheet": "Follow-ups",
+    "headline": "Know who is waiting and what happens next.",
+    "when": "At the start of the day and after each customer contact.",
+    "owner": "One named office contact keeps the record current. The estimator or project lead makes scope, price, and scheduling decisions.",
+    "steps": [
+      "Capture the request once. Link to the original message or the record you already use.",
+      "Give every open item a person, a specific next action, and an agreed follow-up date. Waiting for a customer still needs a next check-in.",
+      "Review overdue and due-today items first. If a date slips, record why and agree the new date instead of silently moving it.",
+      "After contact, record what happened and set the next step. Close only when the outcome or accepted handoff is recorded."
+    ],
+    "done": "Every open request has an owner, an action, and a due date. Closed requests have a recorded outcome or a handoff accepted by the next person.",
+    "exception": "If a request raises an urgent concern, use the company’s agreed escalation process immediately. This sheet does not send alerts or replace that process.",
+    "headers": ["Reference", "Request", "Owner", "Next action", "Due", "Status", "Last update", "Source or outcome"],
+    "widths": [15, 33, 20, 40, 15, 25, 38, 37],
+    "dates": [4],
+    "statusColumn": 5,
+    "statuses": ["New", "Waiting for customer", "Waiting for team", "Closed"],
+    "examples": [
+      ["EX-101", "Office build-out in Tampa", "Alex (office)", "Ask customer for the floor plan", "2026-11-02", "Waiting for customer", "Location and email preference received", "Fictional website request EX-101"],
+      ["EX-102", "Estimate question: revised cabling scope", "Sam (estimator)", "Confirm whether the added room changes the scope", "2026-11-01", "Waiting for team", "Customer asked to add one room; no new price promised", "Fictional estimate E-102, version 1"],
+      ["EX-103", "Site-visit request", "Alex (office)", "", "", "Closed", "Project lead accepted the handoff on Nov 2", "Accepted by Casey; next action recorded in project EX-103"]
+    ],
+    "preview": [["Request", "Office build-out in Tampa"], ["Next action", "Ask the customer for the floor plan."], ["Responsible", "Alex · office contact"], ["Follow-up due", "November 2, 2026"], ["If there’s no reply", "Record the attempt and agree the next check-in."]],
+    "fields": [
+      "Reference: use the existing inquiry or job ID so related records can be found. Request: one sentence describing the customer’s need.",
+      "Owner: a person who has accepted the next action. Next action: a verb and a result, such as ‘Ask for the floor plan’ rather than ‘Follow up’.",
+      "Due: the next internal action date, not a customer appointment or promised completion date. Enter a real spreadsheet date.",
+      "Status: New, Waiting for customer, Waiting for team, or Closed. Last update: the latest contact, result, or reason a date changed.",
+      "Source or outcome: link to the source record while open. On closing, record the result or who accepted the handoff and where the next action is tracked."
+    ]
+  },
+  {
+    "id": "website-updates",
+    "name": "Website updates",
+    "sheet": "Website updates",
+    "headline": "Keep the wording, approval, and final check together.",
+    "when": "Whenever a website correction or new page is proposed.",
+    "owner": "The person making the edit owns the task through the final check. A named company approver confirms the facts and wording.",
+    "steps": [
+      "Record the page, the proposed change, and the source needed to confirm it.",
+      "Prepare the exact wording or page preview. Record the approver and the dated approval for that version.",
+      "After approval, save the previous version and publish using the agreed account and access.",
+      "Check the published page on a phone and desktop. Test affected links and record the URL, check date, and any remaining action."
+    ],
+    "done": "The approved version is live, the affected content and links have been checked, and the result is recorded. Approval alone does not finish the task.",
+    "exception": "If the fact is unconfirmed, keep the change in ‘Needs facts’. If a live check fails, record the problem and restore the previous version or arrange a correction with the site owner.",
+    "headers": ["Page", "Proposed change", "Fact or source to confirm", "Approver", "Approval date", "Owner", "Due", "Status", "Published check record", "Next action"],
+    "widths": [22, 40, 39, 22, 15, 22, 15, 24, 40, 40],
+    "dates": [4, 6],
+    "statusColumn": 7,
+    "statuses": ["Needs facts", "Ready for review", "Approved", "Published - check due", "Checked"],
+    "examples": [
+      ["Example service page", "Explain what to send for a build-out inquiry", "Confirm which plans the estimator needs", "Company owner", "", "Alex (website)", "2026-11-04", "Needs facts", "", "Ask estimator for the minimum useful project details"],
+      ["Example contact page", "Add a project city or ZIP field", "Draft form and proposed field labels", "Company owner", "", "Alex (website)", "2026-11-05", "Ready for review", "", "Review wording and confirm where submissions should arrive"],
+      ["Example service page", "Publish approved service description", "Fictional approved draft EX-W3, version 2", "Company owner (example)", "2026-11-02", "Alex (website)", "2026-11-03", "Approved", "", "Save the previous version, publish, then check the live page"]
+    ],
+    "preview": [["Proposed change", "Add a city or ZIP field to the contact form."], ["Before publishing", "Confirm the label and where submissions should arrive."], ["Responsible", "Alex · website editor"], ["Status", "Ready for company review"], ["Finished when", "Approved, published, and checked on phone and desktop."]],
+    "fields": [
+      "Page: the exact page or profile being changed. Proposed change: link to the draft and name its version when wording changes.",
+      "Fact or source to confirm: the document or person supporting the claim. Leave unknown facts unresolved rather than guessing.",
+      "Approver and Approval date: the person and date attached to that version’s approval. Blank dates mean approval has not been recorded.",
+      "Owner and Due: the editor and next internal delivery date. Status: move from Needs facts through review, approval, publishing, and checking.",
+      "Published check record: the final URL, reviewer, check date, and result. Next action: the step still needed; a ‘Checked’ item has no unresolved correction."
+    ]
+  },
+  {
+    "id": "weekly-handoff",
+    "name": "Weekly handoff",
+    "sheet": "Weekly handoff",
+    "headline": "Bring the owner a short list of decisions.",
+    "when": "Before the agreed weekly check-in and before someone covers the work.",
+    "owner": "The person maintaining the website and follow-ups prepares the update. The manager resolves priorities and assigns decisions.",
+    "steps": [
+      "Review the existing follow-up and website records. Link to them instead of copying every detail.",
+      "List what finished, what is waiting, and the exact decision needed. Include the effect of leaving a decision open.",
+      "Agree an owner and date for each next step. Write the decision back into the original record after the meeting.",
+      "For time away, name the cover person and confirm they can access the records and understand the next actions."
+    ],
+    "done": "Each open decision has a person and a date. Decisions are written back into the source records, and any cover person has accepted the handoff.",
+    "exception": "A time-sensitive issue goes to the responsible person when it arises. It does not wait for the weekly meeting.",
+    "headers": ["Week of", "Type", "Item or reference", "Update or decision needed", "Owner", "Due", "Status"],
+    "widths": [16, 22, 32, 58, 24, 16, 28],
+    "dates": [0, 5],
+    "statusColumn": 6,
+    "statuses": ["Open", "Decision recorded", "Handoff accepted", "Done"],
+    "examples": [
+      ["2026-11-02", "Finished", "EX-103 site-visit request", "Project lead accepted the request; source record updated", "Alex (office)", "", "Done"],
+      ["2026-11-02", "Decision needed", "EX-102 revised cabling scope", "Confirm who will review the added room; customer reply is waiting", "Sam (estimator)", "2026-11-02", "Open"],
+      ["2026-11-02", "Next priority", "Contact-form draft", "Approve the proposed location field and submission destination", "Company owner", "2026-11-05", "Open"]
+    ],
+    "preview": [["Finished", "A project lead accepted the site-visit handoff."], ["Decision needed", "Who will review the added room in estimate EX-102?"], ["Why it matters", "The customer’s reply is waiting on that scope decision."], ["Responsible / due", "Sam · estimator · November 2, 2026"], ["After the meeting", "Record the decision in EX-102 and set the next action."]],
+    "fields": [
+      "Week of: the Monday starting the review week. Type: Finished, Decision needed, Next priority, or Cover handoff.",
+      "Item or reference: a source record ID or link. Update or decision needed: the result, exact question, or handoff to accept.",
+      "Owner: the person responsible for the next decision or action. Due: when it is needed; leave blank only for completed items.",
+      "Status: Open, Decision recorded, Handoff accepted, or Done. Recording a decision also means updating the original task.",
+      "Keep the update short. Bring unresolved decisions and significant changes rather than every routine contact."
+    ]
+  }
+]
