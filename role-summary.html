@@ -16,24 +16,27 @@
   .page { max-width: 8.5in; margin: 0 auto 2rem; padding: 40pt 50pt; background: #fff; }
   .eyebrow { font: 700 11pt Arial, sans-serif; letter-spacing: 1.1pt; text-transform: uppercase; color: var(--teal); margin: 0; }
   h1 { font-size: 32pt; line-height: 34pt; margin: 14pt 0 13pt; }
-  .intro { font-size: 15pt; line-height: 22.5pt; color: var(--intro); margin: 0 0 34pt; }
-  h2 { font-size: 15pt; line-height: 1.3; margin: 0 0 9pt; }
-  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0 25pt; margin-bottom: 26pt; }
+  .intro { font-size: 15pt; line-height: 22.5pt; color: var(--intro); margin: 0 0 26pt; }
+  h2 { font-size: 15pt; line-height: 1.3; margin: 0 0 8pt; break-after: avoid; }
+  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0 25pt; margin-bottom: 20pt; }
   ul { margin: 0; padding-left: 14pt; }
-  li { margin: 0 0 6pt; }
-  table { width: 100%; border-collapse: collapse; margin-bottom: 30pt; }
+  li { margin: 0 0 4pt; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 14pt; }
   th, td { text-align: left; vertical-align: top; padding: 9pt; border-bottom: 1px solid var(--line); }
-  th { width: 123pt; background: var(--cell); font-weight: 700; }
+  th { width: 108pt; background: var(--cell); font-weight: 700; white-space: nowrap; }
   tr { break-inside: avoid; }
-  .section { margin-bottom: 26pt; break-inside: avoid; }
+  .section { margin-bottom: 12pt; break-inside: avoid; }
   .section p { margin: 0; }
-  .measures { margin-top: 6pt; }
-  .ask { background: var(--box); color: #fff; padding: 15pt; margin: 0 0 22pt; break-inside: avoid; }
+  .measures { margin-top: 6pt; display: grid; grid-template-columns: 1fr 1fr; gap: 0 25pt; }
+  .service { margin-bottom: 16pt; break-inside: avoid; }
+  .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 25pt; }
+  @media (max-width: 40rem) { .service-grid, .measures { grid-template-columns: 1fr; } }
+  .ask { background: var(--box); color: #fff; padding: 12pt 15pt; margin: 0 0 10pt; break-inside: avoid; }
   .ask h2 { margin-bottom: 7pt; }
   .ask p { margin: 0; }
-  .fine { font-size: 11pt; line-height: 1.6; color: var(--fine); margin: 0 0 8pt; }
+  .fine { font-size: 11pt; line-height: 1.4; color: var(--fine); margin: 0; }
   .fine a { color: var(--link); }
-  @page { size: letter; margin: 40pt 50pt; }
+  @page { size: letter; margin: 40pt 50pt 34pt; }
   @media print {
     body { background: #fff; }
     .tools { display: none; }
@@ -76,6 +79,16 @@
     </section>
   </div>
 
+  <div class="service">
+    <h2>What the AI service does</h2>
+    <ul class="service-grid">
+      <li><strong>Sorts each new request.</strong> Service, location, and timing, picked out and sent to the right person.</li>
+      <li><strong>Flags missing details.</strong> So the team asks once, early, instead of going back and forth.</li>
+      <li><strong>Drafts a reply.</strong> Ready for a person to check, edit, and send. Nothing goes out on its own.</li>
+      <li><strong>Keeps follow-ups from slipping.</strong> Every open request has someone responsible and a date for the next step.</li>
+    </ul>
+  </div>
+
   <h2>My first 90 days</h2>
   <table>
     <tbody>
@@ -106,8 +119,7 @@
     <p>A paid starting role. It begins with the website and following up on customer messages, and takes on more AI help only where testing shows it works. We’d agree hours and pay together, with check-ins at 30, 60, and 90 days.</p>
   </div>
 
-  <p class="fine">This is just a starting point for discussion. Everything here can change to fit your schedule and priorities.<br>You’d decide what gets published, what I can access, and anything promised to customers.</p>
-  <p class="fine"><a href="https://adamjskoog.github.io/sspros-proposal/#role">Full role plan on the proposal website</a></p>
+  <p class="fine">This is just a starting point for discussion. Everything here can change to fit your schedule and priorities.<br>You’d decide what gets published, what I can access, and anything promised to customers. <a href="https://adamjskoog.github.io/sspros-proposal/#role">Full role plan on the proposal website</a></p>
 </main>
 </body>
 </html>
