@@ -20,6 +20,7 @@ p { margin: 1rem 0; }
 .eyebrow { font-size: 1.1875rem; color: var(--muted); }
 .lead { font-size: 1.625rem; line-height: 1.5; }
 .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+.page > section > p, .page > section > ul, .page > section > div > p, .page > section > div > ul { max-width: 68ch; }
 .service-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem; }
 .service { break-inside: avoid; }
 ul { padding-left: 1.25rem; }
@@ -51,6 +52,7 @@ th { width: 24%; background: var(--soft); }
   @page { size: letter; margin: .65in; }
   body { background: white; font-size: 14pt; line-height: 1.5; }
   .tools { display: none; }
+  .page > section > p, .page > section > ul, .page > section > div > p, .page > section > div > ul { max-width: none; }
   .page { margin: 0; padding: 0; max-width: none; }
   h1 { font-size: 30pt; margin-block: 12pt 18pt; }
   h2 { font-size: 18pt; margin: 18pt 0 9pt; break-after: avoid; }

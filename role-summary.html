@@ -7,7 +7,7 @@
 <title>SSPros · Role summary</title>
 <link rel="icon" href="mark.svg" type="image/svg+xml">
 <style>
-  :root { --ink: #182e3c; --teal: #225b66; --intro: #375460; --cell: #eef3f3; --box: #142b3b; --fine: #566773; --link: #185d70; --line: #d9e1e3; }
+  :root { --ink: #182e3c; --teal: #225b66; --intro: #375460; --cell: #eef3f3; --box: #142b3b; --fine: #3d4c57; --link: #185d70; --line: #d9e1e3; }
   * { box-sizing: border-box; }
   body { margin: 0; background: #f3f5f5; color: var(--ink); font: 13pt/1.5 Arial, sans-serif; }
   .tools { max-width: 8.5in; margin: 1rem auto; display: flex; justify-content: space-between; align-items: center; padding: 0 .5rem; }
@@ -36,6 +36,13 @@
   .ask p { margin: 0; }
   .fine { font-size: 11pt; line-height: 1.4; color: var(--fine); margin: 0; }
   .fine a { color: var(--link); }
+  @media screen {
+    body { font-size: 15pt; }
+    .intro { font-size: 17pt; line-height: 1.5; }
+    .eyebrow { font-size: 12.5pt; }
+    .fine { font-size: 13pt; line-height: 1.5; }
+    .tools a, .tools button { font-size: 14pt; }
+  }
   @page { size: letter; margin: 40pt 50pt 34pt; }
   @media print {
     body { background: #fff; }
