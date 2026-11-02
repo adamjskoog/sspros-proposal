@@ -32,7 +32,6 @@ const SHOWCASE_TITLES = {
   C25: 'Emergency written in Spanish', C26: 'Emergency buried in a quote request', C34: 'Trick message asking for a fake price',
   C36: 'Trick hidden in an off-topic request', C19: 'Breaker that keeps tripping', C37: 'Too vague: “Need an electrician.”'
 };
-const SAMPLE_TITLES = { C01: 'Commercial build-out', C06: 'Request with missing details', ...SHOWCASE_TITLES };
 const ROUTE_LABELS = {
   estimator: 'Estimator', office_intake: 'Office intake', human_escalation: 'Person, immediately',
   out_of_scope: 'Polite decline', spam: 'No reply (spam)'
@@ -46,17 +45,16 @@ function fromEval(item) {
     : h.missing_fields.length ? 'More details needed' : 'Team review needed';
   const verdict = item.passed ? 'Passed every check in the practice test.' : 'The practice test flagged this one for a closer look.';
   return {
-    title: SAMPLE_TITLES[item.id] || item.id, message: '“' + item.inquiry + '”',
+    title: SHOWCASE_TITLES[item.id] || item.id, message: '“' + item.inquiry + '”',
     service: h.service_summary, location: h.location || 'Not provided', timing: h.timing || 'Not provided',
     owner: ROUTE_LABELS[h.route] || h.route, action: h.next_action, draft: h.draft_reply,
     review: [h.reviewer_notes, verdict].filter(Boolean).join(' '), badge, urgent: h.route === 'human_escalation'
   };
 }
 
-const showcaseOrder = Object.keys(SAMPLE_TITLES);
-const recordedCases = results ? (results.cases || results.showcase || []).filter(item => SAMPLE_TITLES[item.id] && item.handoff) : [];
-const samples = recordedCases.length
-  ? Object.fromEntries([...recordedCases]
+const showcaseOrder = Object.keys(SHOWCASE_TITLES);
+const samples = results && results.showcase && results.showcase.length
+  ? Object.fromEntries([...results.showcase]
       .sort((a, b) => showcaseOrder.indexOf(a.id) - showcaseOrder.indexOf(b.id))
       .map(item => [item.id, fromEval(item)]))
   : presets;
@@ -66,19 +64,13 @@ function formatDate(iso) {
 }
 
 function setupDemo() {
-  if (samples === presets) {
-    $('demo-mode').textContent = 'Illustrative examples';
-    $('demo-source').textContent = 'Preset examples · recorded evaluation unavailable';
-    $('demo-intro').textContent = 'These preset examples illustrate the handoff. Recorded AI results are unavailable in this copy of the site.';
-    $('sample-note').textContent = 'Manually prepared example, not an AI result.';
-    return;
-  }
+  if (samples === presets) return;
   const select = $('scenario');
   select.replaceChildren(...Object.entries(samples).map(([id, sample]) => new Option(sample.title, id)));
-  $('demo-mode').textContent = 'Saved AI results';
+  $('demo-mode').textContent = 'Real AI results';
   $('demo-source').textContent = 'Saved from the practice test · ' + formatDate(results.meta.run_at);
-  $('demo-intro').textContent = 'Start with an ordinary request, then try the harder ones. Each result is exactly what the AI wrote for a made-up email. Job titles such as “Estimator” are examples of who might receive it.';
-  $('sample-note').textContent = 'Shown exactly as the AI wrote it during testing (AI model: ' + results.meta.model + ').';
+  $('demo-intro').textContent = 'These are real answers from my practice test, using messages I made up. Labels like “Estimator” are my guesses. With your team, they’d match how your office actually works.';
+  $('sample-note').textContent = 'Shown exactly as the AI wrote it and as it was graded (AI model: ' + results.meta.model + ').';
 }
 
 function resetDemo() {
@@ -87,8 +79,7 @@ function resetDemo() {
   $('sample-message').textContent = sample.message;
   $('demo-empty').hidden = false;
   $('demo-result').hidden = true;
-  $('prepare').textContent = samples === presets ? 'View example handoff →' : 'View saved AI result →';
-  $('prepare').setAttribute('aria-expanded', 'false');
+  $('prepare').innerHTML = 'Sort this message <span aria-hidden="true">→</span>';
   $('copy-status').textContent = '';
 }
 
@@ -103,8 +94,7 @@ function showHandoff() {
   $('review-badge').classList.toggle('urgent', sample.urgent);
   $('demo-empty').hidden = true;
   $('demo-result').hidden = false;
-  $('prepare').textContent = samples === presets ? 'Example handoff shown ✓' : 'Saved AI result shown ✓';
-  $('prepare').setAttribute('aria-expanded', 'true');
+  $('prepare').innerHTML = 'Sorted <span aria-hidden="true">✓</span>';
   $('copy-status').textContent = '';
 }
 
@@ -135,16 +125,16 @@ function percent(metric) {
 function renderResults() {
   if (!results) return;
   const s = results.summary;
-  $('eval-meta').textContent = s.cases + ' made-up customer emails, each checked against the right answer · tested ' +
+  $('eval-meta').textContent = s.cases + ' practice messages I wrote, each checked against the right answer · tested ' +
     formatDate(results.meta.run_at);
   const cards = [
-    metricCard(ratio(s.all_checks_passed), 'Passed every check', 'Right person, right details, reply within the rules'),
-    metricCard(ratio(s.emergency_recall), 'Emergencies sent straight to a person', 'All six test emergencies'),
-    metricCard(String(s.unsafe_drafts), 'Replies flagged as a problem', 'An automatic check. A person still reads every reply.')
+    metricCard(ratio(s.all_checks_passed), 'Messages handled correctly', 'Sorted, details found, reply drafted'),
+    metricCard(ratio(s.emergency_recall), 'Emergencies sent to a person', 'Danger always goes to a human'),
+    metricCard(String(s.unsafe_drafts), 'Unsafe replies', 'No made-up prices or promises')
   ];
   if (s.cost_usd && s.latency_s) {
     const cents = Math.max(1, Math.round(s.cost_usd.per_inquiry * 100));
-    cards.push(metricCard('≈' + cents + '¢', 'AI cost per email, pay-per-use rate', 'For comparison only · about ' + Math.round(s.latency_s.p50) + ' seconds'));
+    cards.push(metricCard('≈' + cents + '¢', 'Cost per message', 'About ' + Math.round(s.latency_s.p50) + ' seconds each'));
   }
   $('eval-grid').replaceChildren(...cards);
   renderHardCases();
@@ -181,47 +171,56 @@ async function copyText(text, status, success) {
   catch { status.textContent = 'Copy is unavailable in this browser. Select and copy the text shown here: ' + text; }
 }
 
+const REVIEW_MINUTES = 1;
+const WEEKS_PER_YEAR = 52;
+const HOURS_PER_WORKDAY = 8;
 const usd = digits => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: digits });
-const estimateFields = ['requests', 'saved', 'review', 'corrections', 'maintenance', 'setup', 'rate'];
-const number = value => value.toLocaleString('en-US', { maximumFractionDigits: 1 });
+
+function netMinutes() {
+  const saved = [...document.querySelectorAll('input[name="saver"]:checked')].reduce((sum, box) => sum + Number(box.value), 0);
+  return Math.max(0, saved - REVIEW_MINUTES);
+}
 
 function calculate() {
-  const invalid = [];
-  const values = Object.fromEntries(estimateFields.map(id => {
-    const input = $(id);
-    const valid = input.value.trim() !== '' && input.checkValidity() && Number.isFinite(Number(input.value));
-    input.setAttribute('aria-invalid', String(!valid));
-    if (!valid) invalid.push(input);
-    return [id, Number(input.value)];
-  }));
-  $('value-error').hidden = invalid.length === 0;
-  if (invalid.length) {
-    $('value-error').textContent = invalid.map(input => input.labels[0].textContent + ': enter ' + input.min + '–' + input.max + ' in steps of ' + input.step + '.').join(' ');
-    for (const id of ['hours', 'net-minutes', 'hours-year', 'value-year', 'ai-year']) $(id).textContent = '—';
-    $('hours-label').textContent = 'estimate unavailable';
-    $('value-direction').textContent = 'Correct the highlighted fields to recalculate.';
-    $('value-formula').textContent = '';
-    return;
+  const r = Number($('requests').value);
+  const m = netMinutes();
+  const rateInput = $('rate');
+  const rateValid = rateInput.value !== '' && rateInput.checkValidity();
+  $('requests-out').textContent = r;
+  $('net-minutes').textContent = m + ' min';
+  $('value-error').hidden = rateValid;
+  rateInput.setAttribute('aria-invalid', String(!rateValid));
+
+  const hoursYear = r * m * WEEKS_PER_YEAR / 60;
+  $('hours').textContent = (r * m * 4 / 60).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  $('hours-year').textContent = Math.round(hoursYear).toLocaleString('en-US') + ' hours';
+  $('days-year').textContent = Math.round(hoursYear / HOURS_PER_WORKDAY).toLocaleString('en-US') + ' days';
+  $('value-year').textContent = rateValid ? usd(0).format(hoursYear * Number(rateInput.value)) + ' / yr' : '—';
+  $('value-formula').textContent = r + ' requests × ' + m + ' min × ' + WEEKS_PER_YEAR + ' weeks ÷ 60';
+
+  if (results && results.summary.cost_usd) {
+    const perInquiry = results.summary.cost_usd.per_inquiry;
+    $('ai-year').textContent = usd(0).format(r * WEEKS_PER_YEAR * perInquiry) + ' / yr';
+    $('value-cost').hidden = false;
+    $('value-cost').textContent = 'AI cost uses the measured $' + perInquiry.toFixed(3) + ' per message from the practice test.';
   }
-  const perInquiry = results?.summary?.cost_usd?.per_inquiry ?? null;
-  const estimate = calculateTimeEstimate(values, perInquiry);
-  $('hours').textContent = number(estimate.firstYearHours);
-  $('hours-label').textContent = 'net hours freed in year one';
-  $('value-direction').textContent = estimate.firstYearHours < 0
-    ? 'This scenario adds ' + number(Math.abs(estimate.firstYearHours)) + ' hours of work in year one. Negative values mean extra work.'
-    : estimate.firstYearHours === 0 ? 'This scenario breaks even on staff time in year one.'
-    : 'After review, corrections, maintenance, and setup. Positive values mean time freed.';
-  $('net-minutes').textContent = number(estimate.netMinutes) + ' min';
-  $('hours-year').textContent = number(estimate.ongoingHours) + ' hours';
-  $('value-year').textContent = usd(0).format(estimate.timeValue);
-  $('ai-year').textContent = estimate.modelCost === null ? 'Not available' : usd(2).format(estimate.modelCost);
-  $('value-formula').textContent = 'Year one: ' + values.requests + ' requests × (' + values.saved + ' − ' + values.review + ' − ' + values.corrections + ') min × 52 weeks ÷ 60 − ' + values.maintenance + ' hours × 12 months − ' + values.setup + ' setup hours.';
+}
+
+/* ---------- Opportunity: today vs. proposed ---------- */
+function setupOpportunityToggles() {
+  document.querySelectorAll('.opp').forEach(article => {
+    article.querySelectorAll('.view-toggle button').forEach(btn => btn.addEventListener('click', () => {
+      article.dataset.view = btn.dataset.view;
+      article.querySelectorAll('.view-toggle button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    }));
+  });
 }
 
 setupDemo();
 resetDemo();
 renderResults();
 calculate();
+setupOpportunityToggles();
 $('scenario').addEventListener('change', resetDemo);
 $('prepare').addEventListener('click', showHandoff);
 $('copy-draft').addEventListener('click', () => copyText($('result-draft').textContent, $('copy-status'), 'Copied. Nothing has been sent.'));
