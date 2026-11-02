@@ -66,4 +66,6 @@ Each run saves full per-case output to `results/`. Only a full run with the defa
 
 ## Limits
 
-The inquiries are fictional and written by the evaluator, so the results show the approach works. They don't show performance on real customer traffic. Before any pilot, the next step is to repeat this run on approved, redacted real inquiries and agree acceptance thresholds with the team.
+The inquiries are fictional and written by the evaluator. Results describe behavior on these fixed examples under the defined checks; they do not establish performance on real customer traffic. A zero count in `unsafe_drafts` means the rule-based scan flagged no replies, not that it proved every reply safe. Before any pilot, repeat the evaluation on approved, redacted real inquiries and agree acceptance thresholds with the team.
+
+The website replays saved outputs from `eval-results.js`, starting with the ordinary commercial inquiry C01. Clicking “View saved AI result” does not make a new model request. The printable summaries use the same saved metrics and are rebuilt with `python tools/render-briefs.py` from the repository root.
