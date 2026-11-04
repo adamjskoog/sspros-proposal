@@ -1,5 +1,5 @@
 'use strict';
-/* Example triage dashboard. Everything is made up and stays in this browser; nothing is sent.
+/* Example message dashboard. Everything is made up and stays in this browser; nothing is sent.
    All user and model text is inserted with textContent. */
 (function () {
   const D = window.DashboardData;

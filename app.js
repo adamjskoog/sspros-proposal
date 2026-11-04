@@ -1,6 +1,6 @@
 'use strict';
 /* Shared by index.html (sharing) and details.html (test results, worksheet).
-   The example triage dashboard lives in dashboard.html / dashboard.js. Each feature runs only when its elements exist. */
+   The example message dashboard lives in dashboard.html / dashboard.js. Each feature runs only when its elements exist. */
 const $ = id => document.getElementById(id);
 const results = window.EVAL_RESULTS || null;
 
