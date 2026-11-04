@@ -1,4 +1,4 @@
-"""Run the triage evaluation and publish a summary for the proposal site.
+"""Run the triage evaluation privately; explicitly export approved fictional fixtures.
 
 Usage:
     python run_eval.py --dry-run            # validate the dataset, no API calls
@@ -20,19 +20,20 @@ from pathlib import Path
 import anthropic
 
 from claude_code_backend import find_claude, triage_claude_code
-from grading import failed_checks, grade_case, summarize
+from grading import GRADER_VERSION, failed_checks, grade_case, summarize
+from public_export import assert_public_export, file_hash
 from triage import MODEL, PRICES, SYSTEM_PROMPT, Handoff, triage
 
 HERE = Path(__file__).parent
 DATASET = HERE / "dataset.jsonl"
-RESULTS_DIR = HERE / "results"
+RESULTS_DIR = HERE.parent.parent / "private-eval-results"
 SITE_EXPORT = HERE.parent / "eval-results.js"
-SHOWCASE_IDS = ("C25", "C26", "C34", "C36", "C19", "C37")
+SHOWCASE_IDS = ("C01", "C18", "C21", "C25", "C26", "C34", "C36", "C19", "C37")
 DEFAULT_EFFORT = "medium"
 
 
-def load_dataset(limit: int | None) -> list[dict]:
-    rows = [json.loads(line) for line in DATASET.read_text(encoding="utf-8").splitlines() if line.strip()]
+def load_dataset(limit: int | None, dataset: Path = DATASET) -> list[dict]:
+    rows = [json.loads(line) for line in dataset.read_text(encoding="utf-8").splitlines() if line.strip()]
     return rows[:limit] if limit is not None else rows
 
 
@@ -43,6 +44,8 @@ def validate_dataset(cases: list[dict]) -> list[str]:
     problems = []
     for case in cases:
         expected = case["expected"]
+        if expected.get("timing_given") and not expected.get("timing_patterns"):
+            problems.append(f"{case['id']}: timing requires explicit expected patterns")
         for name, values in allowed.items():
             labels = expected.get(name)
             if labels is None:
@@ -81,9 +84,8 @@ def error_row(row: dict, error: str) -> dict:
 
 
 def should_update_site(args) -> bool:
-    """Only a full run with the published configuration may replace the numbers on the site."""
-    is_default = args.limit is None and args.model == MODEL and args.effort == DEFAULT_EFFORT
-    return bool(args.publish or is_default)
+    """Public export is always an explicit action, additionally guarded by fixture hashes."""
+    return bool(args.publish)
 
 
 def passed_all(row: dict) -> bool:
@@ -128,6 +130,7 @@ def save_results(summary: dict, rows: list[dict], meta: dict) -> Path:
 
 
 def update_site(summary: dict, rows: list[dict], meta: dict) -> None:
+    assert_public_export(rows, meta)
     showcase = [{"id": row["id"], "tags": row["tags"], "inquiry": row["inquiry"], "handoff": row["handoff"], "passed": passed_all(row)}
                 for row in rows if row["id"] in SHOWCASE_IDS and row["handoff"]]
     cases = [{"id": row["id"], "tags": row["tags"], "inquiry": row["inquiry"], "expected_route": row["expected"]["route"],
@@ -142,30 +145,40 @@ def main() -> int:
     parser.add_argument("--model", default=MODEL, choices=sorted(PRICES))
     parser.add_argument("--effort", default=DEFAULT_EFFORT, choices=["low", "medium", "high"])
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--dataset", type=Path, default=DATASET,
+                        help="input JSONL path; keep future real-message data outside this public repository")
     parser.add_argument("--backend", default="api", choices=["api", "claude-code"],
                         help="api: Anthropic API key; claude-code: the Claude Code CLI on a subscription login")
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--dry-run", action="store_true", help="validate the dataset without calling the API")
     parser.add_argument("--no-save", action="store_true", help="do not write any result files")
-    parser.add_argument("--publish", action="store_true", help="update the site even for a partial or non-default run")
+    parser.add_argument("--publish", action="store_true", help="explicitly export allowlisted fictional fixtures to ../eval-results.js")
     parser.add_argument("--site-from-latest", action="store_true",
-                        help="rebuild ../eval-results.js from results/latest.json without calling the model")
+                        help="rebuild ../eval-results.js from the private results directory; requires --publish")
     args = parser.parse_args()
 
     if args.site_from_latest:
+        if not args.publish:
+            parser.error("--site-from-latest requires --publish; only approved fictional fixtures can be exported")
         saved = json.loads((RESULTS_DIR / "latest.json").read_text(encoding="utf-8"))
         update_site(saved["summary"], saved["rows"], saved["meta"])
-        print(f"Rebuilt {SITE_EXPORT.name} from results/latest.json ({len(saved['rows'])} cases).")
+        print(f"Rebuilt {SITE_EXPORT.name} from {RESULTS_DIR / 'latest.json'} ({len(saved['rows'])} cases).")
         return 0
 
-    cases = load_dataset(args.limit)
+    if args.limit is not None and args.limit < 1:
+        parser.error("--limit must be positive")
+    cases = load_dataset(args.limit, args.dataset)
     problems = validate_dataset(cases)
+    if not cases or args.workers < 1:
+        parser.error("provide at least one case and a positive worker count")
     if problems:
         print("Dataset problems:\n  " + "\n  ".join(problems))
         return 1
     print(f"Dataset OK: {len(cases)} cases. System prompt: {len(SYSTEM_PROMPT):,} characters.")
     if args.dry_run:
         return 0
+    if args.publish:
+        assert_public_export(cases, {"data_classification": "authored-fictional"})
     if args.backend == "claude-code":
         if find_claude() is None:
             print("Claude Code CLI not found. Install it and log in, then run again.")
@@ -188,13 +201,23 @@ def main() -> int:
         return 0
     meta = {"model": args.model, "effort": args.effort, "backend": args.backend, "cases": len(rows),
             "run_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "data_classification": "authored-fictional", "grader_version": GRADER_VERSION, "hash_format": "sha256-utf8-lf",
+            "prompt_sha256": __import__('hashlib').sha256(SYSTEM_PROMPT.encode('utf-8')).hexdigest(),
+            "dataset_sha256": file_hash(args.dataset), "grader_sha256": file_hash(HERE/'grading.py'),
+            "runner_sha256": file_hash(Path(__file__)), "pipeline_sha256": file_hash(HERE/'triage.py'),
+            "cli_backend_sha256": file_hash(HERE/'claude_code_backend.py'),
             "served_models": sorted({row["model_served"] for row in rows if row["model_served"]})}
-    print(f"\nSaved {save_results(summary, rows, meta).relative_to(HERE)}")
+    # Classification is earned from the fixture allowlist, never from names being removed.
+    try:
+        assert_public_export(rows, meta)
+    except ValueError:
+        meta['data_classification'] = 'private'
+    print(f"\nSaved {save_results(summary, rows, meta)}")
     if should_update_site(args):
         update_site(summary, rows, meta)
         print(f"Updated {SITE_EXPORT.name} for the proposal site.")
     else:
-        print("Site not updated (partial or non-default run). Add --publish to override.")
+        print("Site not updated. Public export always requires --publish and allowlisted fictional inputs.")
     return 0
 
 

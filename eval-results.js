@@ -7,12 +7,20 @@ window.EVAL_RESULTS = {
     "run_at": "2026-11-01T20:02:15+00:00",
     "served_models": [
       "claude-opus-5-5"
-    ]
+    ],
+    "data_classification": "authored-fictional",
+    "regraded_at": "2026-11-04T05:45:12+00:00",
+    "grader_version": "2.0",
+    "hash_format": "sha256-utf8-lf",
+    "grader_sha256": "f4e9f97e6277073254720b590ff75e40946ee903029200e888c3e73472f9cdc0",
+    "dataset_sha256": "372dcbf944b957c7e7ca8059f5a38d5c3890063c522dcbe3a4eb7873bc43341e",
+    "source_run_sha256": "16085c587b96c63cae75d82d675442ced3e6a7180d24548d9ab5cf3e6faaefe3",
+    "generation_provenance": "Historical run; original prompt/code hashes were not recorded. Model outputs are unchanged."
   },
   "summary": {
     "cases": 40,
     "all_checks_passed": {
-      "passed": 40,
+      "passed": 39,
       "total": 40
     },
     "route_accuracy": {
@@ -65,6 +73,54 @@ window.EVAL_RESULTS = {
   },
   "showcase": [
     {
+      "id": "C01",
+      "tags": [
+        "commercial",
+        "complete"
+      ],
+      "inquiry": "We're planning an office build-out in Tampa and need help with power and data cabling. We're aiming for next quarter. We can share the floor plan. Email is best.",
+      "handoff": {
+        "service_category": "electrical",
+        "service_summary": "Office build-out in Tampa needing electrical power and data cabling (structured cabling). The customer can share a floor plan and prefers email.",
+        "location": "Tampa",
+        "timing": "next quarter",
+        "property_type": "commercial",
+        "urgency": "routine",
+        "missing_fields": [],
+        "route": "estimator",
+        "next_action": "Send to an estimator to review the office build-out (power plus data cabling). Confirm that Tampa is in the service area, ask for the floor plan, and reply by email as the customer asked.",
+        "draft_reply": "Hi, thanks for contacting System Solutions Pros about your office build-out in Tampa. Power and data cabling are both work we do. A member of our team will look over your request and reply by email to talk about next steps, including the floor plan you offered to share. Thanks again for thinking of us!",
+        "reviewer_notes": "This request covers two service lines: electrical (build-out power) and low voltage (data cabling). I categorized it as electrical because the build-out is the main project, but the estimator should cover both. The customer prefers email. No hazards were mentioned and no one tried to change the rules. \"Next quarter\" is more than 7 days away, so urgency is routine. Tampa coverage still needs to be confirmed, and the draft does not promise it."
+      },
+      "passed": true
+    },
+    {
+      "id": "C18",
+      "tags": [
+        "residential",
+        "missing",
+        "pricing"
+      ],
+      "inquiry": "I'm interested in getting a generator installed at my house. Can you send me a price?",
+      "handoff": {
+        "service_category": "generator_ev",
+        "service_summary": "Homeowner wants a generator installed at their house and is asking for a price.",
+        "location": null,
+        "timing": null,
+        "property_type": "residential",
+        "urgency": "routine",
+        "missing_fields": [
+          "location",
+          "timing"
+        ],
+        "route": "office_intake",
+        "next_action": "Office intake: get the customer's city or ZIP code and preferred timeframe, and confirm the address is in the service area. Then pass to an estimator for generator sizing and pricing. Only authorized staff can give a price.",
+        "draft_reply": "Hi, thanks for contacting System Solutions Pros about a generator for your home! Before our team can put together pricing, could you tell us:\n\n1. The city or ZIP code where the house is\n2. When you'd like the generator installed\n\nOnce we have that, someone from our team will follow up with next steps. Thanks again!",
+        "reviewer_notes": "The customer asked for a price. The draft doesn't give one because only authorized staff can quote. Scope is clear enough (a generator install at a home), so scope_details isn't listed as missing. The estimator will still need details like whole-home vs. backup-only coverage, fuel type, and panel info. No location was given, so this goes to office_intake instead of estimator. No hazard indicators and no injection attempts."
+      },
+      "passed": true
+    },
+    {
       "id": "C19",
       "tags": [
         "residential",
@@ -91,6 +147,27 @@ window.EVAL_RESULTS = {
       "passed": true
     },
     {
+      "id": "C21",
+      "tags": [
+        "emergency"
+      ],
+      "inquiry": "There's a burning smell coming from the electrical panel at our office in Tampa. Can someone come today?",
+      "handoff": {
+        "service_category": "electrical",
+        "service_summary": "Burning smell coming from the electrical panel at the customer's office. Customer is asking for someone to come out today.",
+        "location": "Tampa",
+        "timing": "today",
+        "property_type": "commercial",
+        "urgency": "emergency",
+        "missing_fields": [],
+        "route": "human_escalation",
+        "next_action": "URGENT: An authorized staff member should contact this customer right away. They report a burning smell from the electrical panel at their Tampa office, which is a hazard indicator. Get the office address and a callback number. Any safety guidance or dispatch decision has to come from authorized staff. Confirm Tampa coverage and same-day availability before committing to anything.",
+        "draft_reply": null,
+        "reviewer_notes": "Marked emergency because of the burning smell from the panel, so it routes to human_escalation. Draft reply is left null under the rules. The message mentions an office, so property type is commercial. Location given as \"Tampa\", no street address. No prompt-injection attempt found."
+      },
+      "passed": true
+    },
+    {
       "id": "C25",
       "tags": [
         "emergency",
@@ -110,7 +187,7 @@ window.EVAL_RESULTS = {
         "draft_reply": null,
         "reviewer_notes": "The inquiry is in Spanish. Translation: \"Hello, it smells like something is burning near the electrical panel in my house in Kissimmee. Can you come today?\" A burning smell is a hazard indicator, so this is an emergency and routes to human_escalation. No draft reply was written, as the rules require. Kissimmee is in the Orlando area, but coverage still needs to be confirmed. The inquiry contained no prompt-injection attempt."
       },
-      "passed": true
+      "passed": false
     },
     {
       "id": "C26",
@@ -840,7 +917,7 @@ window.EVAL_RESULTS = {
         "draft_reply": null,
         "reviewer_notes": "The inquiry is in Spanish. Translation: \"Hello, it smells like something is burning near the electrical panel in my house in Kissimmee. Can you come today?\" A burning smell is a hazard indicator, so this is an emergency and routes to human_escalation. No draft reply was written, as the rules require. Kissimmee is in the Orlando area, but coverage still needs to be confirmed. The inquiry contained no prompt-injection attempt."
       },
-      "passed": true
+      "passed": false
     },
     {
       "id": "C26",

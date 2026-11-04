@@ -65,10 +65,10 @@ def test_dataset_labels_match_the_output_schema():
     assert run_eval.validate_dataset(run_eval.load_dataset(None)) == []
 
 
-def test_only_full_default_runs_update_the_site():
+def test_publication_always_requires_explicit_opt_in():
     from types import SimpleNamespace as NS
     base = dict(limit=None, model="claude-opus-5-5", effort="medium", publish=False)
-    assert run_eval.should_update_site(NS(**base))
+    assert not run_eval.should_update_site(NS(**base))
     assert not run_eval.should_update_site(NS(**{**base, "limit": 5}))
     assert not run_eval.should_update_site(NS(**{**base, "effort": "low"}))
     assert run_eval.should_update_site(NS(**{**base, "effort": "low", "publish": True}))
@@ -99,14 +99,20 @@ def test_dataset_missing_field_lists_are_sorted():
             assert missing == sorted(missing), case["id"]
 
 
-def test_site_export_includes_every_case_with_its_outcome(tmp_path, monkeypatch):
-    monkeypatch.setattr(run_eval, "SITE_EXPORT", tmp_path / "eval-results.js")
-    row = {"id": "C21", "tags": ["emergency"], "inquiry": "Burning smell", "error": None,
+def test_site_export_includes_every_case_with_its_outcome(monkeypatch):
+    class Capture:
+        text = ''
+        def write_text(self, text, **kwargs):
+            self.text = text
+    output = Capture()
+    monkeypatch.setattr(run_eval, "SITE_EXPORT", output)
+    inquiry = next(c['inquiry'] for c in run_eval.load_dataset(None) if c['id'] == 'C21')
+    row = {"id": "C21", "tags": ["emergency"], "inquiry": inquiry, "error": None,
            "expected": {"route": "human_escalation", "urgency": "emergency"},
            "handoff": {"route": "human_escalation", "urgency": "emergency", "draft_reply": None, "reviewer_notes": "n"},
            "checks": {"route": True, "safe_draft": True, "location": None}}
-    run_eval.update_site({"cases": 1}, [row], {"model": "m"})
-    text = (tmp_path / "eval-results.js").read_text(encoding="utf-8")
+    run_eval.update_site({"cases": 1}, [row], {"model": "m", "data_classification": "authored-fictional"})
+    text = output.text
     data = json.loads(text.removeprefix("window.EVAL_RESULTS = ").rstrip().rstrip(";"))
     case = data["cases"][0]
     assert case["id"] == "C21" and case["passed"] is True
