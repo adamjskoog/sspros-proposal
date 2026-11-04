@@ -10,16 +10,17 @@
   <meta property="og:description" content="A role proposal, a tested AI tool for sorting customer messages, and a clear plan for the first 90 days.">
   <title>SSPros · Digital Operations &amp; AI Automation</title>
   <link rel="icon" href="mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=12">
   <script src="eval-results.js" defer></script>
   <script src="value.js" defer></script>
-  <script src="app.js?v=5" defer></script>
+  <script src="board.js?v=1" defer></script>
+  <script src="app.js?v=6" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <a class="wordmark" href="#" aria-label="SSPros proposal home"><span class="mark" aria-hidden="true">s<span>p</span></span><span>SSPros<span class="wordmark-note">A proposal for the next chapter</span></span></a>
-    <nav aria-label="Main navigation"><a href="#opportunity">Where I’d start</a><a href="#work-sample">An example</a><a href="#ai-pilot">Where AI could help</a><a href="#plan">First 90 days</a><a href="#tool-costs">Cost</a></nav>
+    <nav aria-label="Main navigation"><a href="#opportunity">Where I’d start</a><a href="#work-sample">Sorting what comes in</a><a href="#ai-pilot">Where AI could help</a><a href="#plan">First 90 days</a><a href="#tool-costs">Cost</a></nav>
     <a class="header-cta" href="#conversation">Let’s talk</a>
   </header>
   <main id="main">
@@ -52,45 +53,46 @@
       <p class="section-note">I noted a few more ideas, including <a href="service-concept.html">a sample page for commercial work</a>. They’re on the <a href="details.html#website-ideas">details page</a>, and we’d only do the ones you want.</p>
     </section>
     <section id="work-sample" class="demo-section">
-      <div class="section-wrap section-space">
-        <div class="section-heading"><p class="eyebrow">02 / AN EXAMPLE</p><div><h2>One customer message.<br>A summary your team can use.</h2><p id="demo-intro">This is the tool I built and tested. Pick a made-up message to see what the AI prepared for your team. Nothing is sent, and a person checks every reply before it goes out.</p></div></div>
-        <noscript><p class="completion">Turn on JavaScript to switch between examples. You can still read the <a href="details.html#testing">testing notes</a>.</p></noscript>
-        <div class="demo-toolbar"><span class="demo-badge"><span class="status-dot" aria-hidden="true"></span> <span id="demo-mode">Example answers</span></span><span id="demo-source">Made-up messages · nothing is sent</span></div>
-        <div class="demo-workspace">
-          <div class="request-pane">
-            <label class="label" for="scenario">Pick an example message</label>
-            <select id="scenario"><option value="commercial">Commercial build-out</option><option value="missing">Request with missing details</option><option value="urgent">Urgent electrical concern</option></select>
-            <div class="message-top"><span class="avatar" aria-hidden="true">↙</span><div><strong id="sample-title">Commercial build-out</strong><span>Made-up website message</span></div></div>
-            <blockquote id="sample-message">“We’re planning an office build-out in Tampa and need help with power and data cabling. We’re aiming for next quarter. We can share the floor plan. Email is best.”</blockquote>
-            <p class="sample-note" id="sample-note">This is a written example, not a saved AI answer.</p>
-          </div>
-          <div class="result-pane" aria-live="polite" aria-atomic="true">
-            <div id="demo-result">
-              <div class="result-heading"><span class="label">What your team would see</span><span id="review-badge" class="review-badge">Team review needed</span></div>
-              <dl class="handoff-facts"><div><dt>Service</dt><dd id="result-service"></dd></div><div><dt>Location</dt><dd id="result-location"></dd></div><div><dt>Timing</dt><dd id="result-timing"></dd></div><div><dt>Goes to</dt><dd id="result-owner"></dd></div></dl>
-              <div class="next-action"><span class="label">Next step</span><p id="result-action"></p></div>
-              <div class="draft"><span id="draft-label" class="label">Draft reply · not sent</span><p id="result-draft"></p></div>
-              <p id="result-missing" class="review-note"></p><details class="model-notes"><summary>The AI’s own notes</summary><p id="result-review" class="review-note"></p></details>
-              <button id="copy-draft" type="button" class="text-button">Copy draft</button><span id="copy-status" class="copy-status" role="status"></span>
+      <div class="section-wrap section-space" id="triage-board">
+        <div class="section-heading"><p class="eyebrow">02 / SORTING WHAT COMES IN</p><div><h2>Everything that comes in, sorted.<br>A person over every lane.</h2><p id="demo-intro">Calls, emails, texts, and website messages land in one place. AI helpers sort each one, flag anything urgent, and prepare the next step. A person on your team decides what actually happens. Click any card to see what the AI prepared.</p></div></div>
+        <noscript><p class="completion">Turn on JavaScript to use this example board. You can still read the <a href="details.html#testing">testing notes</a>.</p></noscript>
+        <div class="triage-toolbar">
+          <div class="triage-filters" role="group" aria-label="Show messages from"><span class="label">Show</span><button type="button" data-filter="all" aria-pressed="true">All</button><button type="button" data-filter="website" aria-pressed="false">Website</button><button type="button" data-filter="email" aria-pressed="false">Email</button><button type="button" data-filter="phone" aria-pressed="false">Phone</button><button type="button" data-filter="text" aria-pressed="false">Text</button></div>
+          <span class="triage-note">Made-up messages · nothing is sent · <button type="button" class="text-button" id="triage-reset">Reset the board</button></span>
+        </div>
+        <p class="section-note" id="triage-saved-note" hidden>The saved AI answers couldn’t load, so only the written examples are shown.</p>
+        <div class="triage-urgent" aria-labelledby="lane-urgent-title"><div class="triage-lane-head"><h3 id="lane-urgent-title">⚠ Needs a person now <span class="triage-count" id="count-urgent">0</span></h3><p>The AI never replies to these. The owner or on-call lead calls back.</p></div><ul class="triage-cards" id="lane-urgent"></ul><p class="triage-empty" id="empty-urgent" hidden>Nothing urgent right now.</p></div>
+        <div class="triage-lanes">
+          <div class="triage-lane" aria-labelledby="lane-electrical-title"><div class="triage-lane-head"><h3 id="lane-electrical-title">Electrical <span class="triage-count" id="count-electrical">0</span></h3><p>AI estimating helper prepares the job details. <strong>The estimator decides.</strong></p></div><ul class="triage-cards" id="lane-electrical"></ul><p class="triage-empty" id="empty-electrical" hidden>Nothing here for this filter.</p></div>
+          <div class="triage-lane" aria-labelledby="lane-comms-title"><div class="triage-lane-head"><h3 id="lane-comms-title">Communications <span class="triage-count" id="count-comms">0</span></h3><p>AI communications helper drafts replies. <strong>The office approves.</strong></p></div><ul class="triage-cards" id="lane-comms"></ul><p class="triage-empty" id="empty-comms" hidden>Nothing here for this filter.</p></div>
+          <div class="triage-lane" aria-labelledby="lane-web-title"><div class="triage-lane-head"><h3 id="lane-web-title">Website <span class="triage-count" id="count-web">0</span></h3><p>AI web helper spots website problems. <strong>I fix them; the owner approves.</strong></p></div><ul class="triage-cards" id="lane-web"></ul><p class="triage-empty" id="empty-web" hidden>Nothing here for this filter.</p></div>
+        </div>
+        <article class="triage-detail" id="triage-detail" aria-labelledby="detail-title" hidden>
+          <div class="triage-detail-head"><div><span class="label" id="detail-panel-label">Prepared by the AI helper</span><h3 id="detail-title" tabindex="-1"></h3><p id="detail-source"></p></div><span class="triage-kind" id="detail-kind"></span></div>
+          <div class="triage-detail-grid">
+            <div><span class="label">What came in</span><blockquote id="detail-message"></blockquote></div>
+            <div>
+              <dl class="handoff-facts"><div><dt>What it’s about</dt><dd id="detail-service"></dd></div><div><dt>Where</dt><dd id="detail-location"></dd></div><div><dt>When</dt><dd id="detail-timing"></dd></div><div><dt>Still needed</dt><dd id="detail-missing"></dd></div><div><dt>Goes to</dt><dd id="detail-lane"></dd></div></dl>
+              <div class="next-action"><span class="label">Next step</span><p id="detail-next"></p></div>
+              <div class="draft"><span class="label" id="detail-draft-label">Draft reply · not sent</span><p id="detail-draft"></p></div>
+              <details class="model-notes"><summary>The AI’s own notes</summary><p id="detail-notes" class="review-note"></p></details>
+              <div class="triage-actions"><button type="button" class="button primary" id="action-approve">Approve next step</button><button type="button" class="button primary" id="action-handled" hidden>Mark as called back</button><button type="button" class="text-button" id="action-escalate">Needs a person now</button></div>
+              <p class="copy-status" id="detail-status" role="status"></p>
             </div>
           </div>
-        </div>
-        <details class="support-detail" id="review-example">
-          <summary>What happens next: a person checks the draft</summary>
-          <div class="detail-body"><div class="review-grid"><div><span class="label">The reviewer’s edit (example)</span><p>The draft mentions the floor plan but doesn’t actually ask for it. I’d fix that before anyone sends it:</p><blockquote>Thanks for the details about the Tampa office build-out. Could you send the floor plan you mentioned? That will help our estimator review the request.</blockquote></div><div><span class="label">The follow-up note (example)</span><dl class="record-facts"><div><dt>Request</dt><dd>Office build-out in Tampa (made up)</dd></div><div><dt>Who’s handling it</dt><dd>Alex, office (made up)</dd></div><div><dt>Next step</dt><dd>Ask the customer for the floor plan.</dd></div><div><dt>Check back</dt><dd>In two business days if there’s no reply.</dd></div></dl><p>The AI doesn’t assign work or set reminders. A person does.</p></div></div></div>
-        </details>
+        </article>
       </div>
     </section>
 
     <section id="ai-pilot" class="section-wrap section-space">
       <div class="section-heading"><p class="eyebrow">03 / WHERE AI COULD HELP</p><div><h2>A few places AI could save time.<br>We’d pick one together.</h2><p>First I’d ask which software you already use for jobs and customers. Many of those programs already have reminders and AI features built in, and using what you already pay for comes before building anything new.</p></div></div>
       <ol class="skills-grid">
-        <li><span class="skill-num">Built and tested</span><h3>Sorting website messages.</h3><p class="skill-proof">The example above. It pulls out the key details, flags emergencies, and drafts a polite reply asking for anything missing.</p><p class="skill-use"><strong>A person still:</strong> approves every reply and handles every emergency.</p><a class="text-link" href="#work-sample">See the example</a></li>
+        <li><span class="skill-num">Partly built and tested</span><h3>Sorting what comes in.</h3><p class="skill-proof">The board above. The website-message part is built and tested: it pulls out the key details, flags emergencies, and drafts a polite reply. Calls, emails, and texts would come next.</p><p class="skill-use"><strong>A person still:</strong> approves every reply and handles every emergency.</p><a class="text-link" href="#work-sample">See the board</a></li>
         <li><span class="skill-num">Idea</span><h3>Proposals from the estimator’s notes.</h3><p class="skill-proof">The estimator jots down the scope and notes. AI turns them into a clean, consistent written proposal, ready for review.</p><p class="skill-use"><strong>A person still:</strong> sets every price and checks every line.</p></li>
         <li><span class="skill-num">Idea</span><h3>Maintenance reminders.</h3><p class="skill-proof">Generator and EV charger customers get a friendly note when service is due, which can bring back repeat work.</p><p class="skill-use"><strong>A person still:</strong> chooses who gets reminders and what they say.</p></li>
         <li><span class="skill-num">Idea</span><h3>Job notes from a voice memo.</h3><p class="skill-proof">Someone on site records a quick voice note. AI turns it into a tidy written note for the job file.</p><p class="skill-use"><strong>A person still:</strong> checks the note is right before it’s saved.</p></li>
       </ol>
-      <p class="section-note">I tested the message tool on 40 made-up messages. It sent every emergency to a person, and it still made mistakes a person would need to catch. <a href="details.html#testing">Read the testing notes</a>.</p>
+      <p class="section-note">I tested the website-message sorting on 40 made-up messages. It sent every emergency to a person, and it still made mistakes a person would need to catch. <a href="details.html#testing">Read the testing notes</a>.</p>
     </section>
 
     <section id="plan" class="section-wrap section-space plan-section"><div class="section-heading"><p class="eyebrow">04 / THE FIRST 90 DAYS</p><div><h2>Listen first.<br>Then one useful thing at a time.</h2><p>We’d check in at each step and decide together what comes next.</p></div></div>

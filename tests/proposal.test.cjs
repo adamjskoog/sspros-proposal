@@ -8,18 +8,22 @@ const root = path.join(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const base = { requests: 20, manual: 10, assisted: 6, maintenance: 1, setup: 8, rate: 30, tools: 400 };
 const close = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} != ${expected}`);
+const savedResults = () => JSON.parse(read('eval-results.js').replace(/^[^{]*/, '').replace(/;?\s*$/, ''));
 function open({ page = 'index.html', recorded = true, url = 'https://example.test/proposal/', results } = {}) {
   const dom = new JSDOM(read(page), { runScripts: 'outside-only', url });
   const w = dom.window;
   w.matchMedia = () => ({ matches: true });
+  w.HTMLElement.prototype.scrollIntoView = function () { w.scrolledTo = this.id; };
   Object.defineProperty(w.navigator, 'clipboard', { value: { writeText: async text => { w.copied = text; } } });
   if (results) w.EVAL_RESULTS = results;
   else if (recorded) w.eval(read('eval-results.js'));
   w.eval(read('value.js'));
+  w.eval(read('board.js'));
   w.eval(read('app.js'));
   const get = id => w.document.getElementById(id);
-  const choose = id => { get('scenario').value = id; get('scenario').dispatchEvent(new w.Event('change')); };
-  return { dom, w, get, choose };
+  const ids = lane => [...get('lane-' + lane).querySelectorAll('.triage-card')].map(card => card.dataset.id);
+  const click = id => w.document.querySelector(`.triage-card[data-id="${id}"]`).click();
+  return { dom, w, get, ids, click };
 }
 const details = (options = {}) => open({ page: 'details.html', url: 'https://example.test/proposal/details.html', ...options });
 
@@ -45,59 +49,95 @@ test('worksheet rejects blank, absent, non-finite and out-of-range values', () =
   assert.ok(estimate({ ...base, tools: 0, setup: 0 }));
 });
 
-test('the commercial example shows the exact saved answer without a click', t => {
-  const { dom, w, get } = open(); t.after(() => dom.window.close());
-  assert.equal(get('scenario').value, 'C01');
-  assert.equal(get('demo-result').hidden, false);
+test('board sorts saved answers by their recorded route and written examples by lane', t => {
+  const { dom, get, ids } = open(); t.after(() => dom.window.close());
+  assert.deepEqual(ids('urgent'), ['C21', 'C25', 'C26', 'P1']);
+  assert.deepEqual(ids('electrical'), ['C01', 'C34', 'E1']);
+  assert.deepEqual(ids('comms'), ['C18', 'C37', 'C36', 'T1']);
+  assert.deepEqual(ids('web'), ['W1', 'W2', 'W3']);
+  assert.equal(get('count-urgent').textContent, '4');
+  assert.equal(get('triage-saved-note').hidden, true);
+});
+
+test('the board opens on the first urgent item, with no draft and a call-back action', t => {
+  const { dom, get } = open(); t.after(() => dom.window.close());
+  assert.equal(get('triage-detail').hidden, false);
+  assert.equal(get('detail-title').textContent, 'Burning smell at the panel');
+  assert.match(get('detail-draft').textContent, /calls this customer directly/);
+  assert.equal(get('action-handled').hidden, false);
+  assert.equal(get('action-approve').hidden, true);
+  assert.equal(get('detail-panel-label').textContent, 'Needs a person now');
+});
+
+test('a saved card shows the exact saved AI answer and is labeled as saved', t => {
+  const { dom, w, get, click } = open(); t.after(() => dom.window.close());
+  click('C01');
   const source = w.EVAL_RESULTS.cases.find(row => row.id === 'C01').handoff;
-  for (const [id, field] of [['result-service','service_summary'],['result-timing','timing'],['result-action','next_action'],['result-draft','draft_reply']]) assert.equal(get(id).textContent, source[field]);
-  assert.equal(get('review-example').hidden, false);
-  assert.match(get('draft-label').textContent, /Saved draft/);
+  assert.equal(get('detail-service').textContent, source.service_summary);
+  assert.equal(get('detail-next').textContent, source.next_action);
+  assert.equal(get('detail-draft').textContent, source.draft_reply);
+  assert.equal(get('detail-kind').textContent, 'Saved AI answer');
+  assert.match(get('detail-draft-label').textContent, /Saved draft/);
+  assert.equal(w.document.activeElement, get('detail-title'));
 });
 
-test('changing examples updates the answer and shows missing details', t => {
-  const { dom, get, choose } = open(); t.after(() => dom.window.close());
-  choose('C18');
-  assert.equal(get('review-example').hidden, true);
-  assert.match(get('sample-message').textContent, /generator/i);
-  assert.match(get('result-missing').textContent, /location/);
-  assert.equal(get('copy-draft').hidden, false);
+test('written examples are labeled as written, not as AI answers', t => {
+  const { dom, get, click } = open(); t.after(() => dom.window.close());
+  click('E1');
+  assert.equal(get('detail-kind').textContent, 'Written example');
+  assert.match(get('detail-draft-label').textContent, /Example draft/);
+  assert.match(get('detail-lane').textContent, /Estimator/);
 });
 
-test('urgent route has no customer draft or copy action', t => {
-  const { dom, get, choose } = open(); t.after(() => dom.window.close());
-  choose('C21');
-  assert.equal(get('copy-draft').hidden, true);
-  assert.match(get('result-draft').textContent, /No reply was drafted/);
-  assert.equal(get('result-owner').textContent, 'A person, right away');
-  assert.equal(get('review-badge').classList.contains('urgent'), true);
+test('approving, escalating and resetting change only the example board', t => {
+  const { dom, get, ids, click } = open(); t.after(() => dom.window.close());
+  click('C01'); get('action-approve').click();
+  assert.match(get('detail-status').textContent, /Approved by Estimator.*nothing was sent/);
+  assert.equal(get('action-approve').disabled, true);
+  click('T1'); get('action-escalate').click();
+  assert.ok(ids('urgent').includes('T1'));
+  assert.ok(!ids('comms').includes('T1'));
+  assert.equal(get('action-handled').hidden, false);
+  get('triage-reset').click();
+  assert.ok(ids('comms').includes('T1'));
+  click('C01'); assert.equal(get('action-approve').disabled, false);
 });
 
-test('a harder example linked from the details page opens on the main page', t => {
+test('source filters narrow every lane and show empty-lane notes', t => {
+  const { dom, w, get, ids } = open(); t.after(() => dom.window.close());
+  w.document.querySelector('[data-filter="phone"]').click();
+  assert.deepEqual(ids('urgent'), ['P1']);
+  assert.deepEqual(ids('electrical'), []);
+  assert.equal(get('empty-electrical').hidden, false);
+  assert.equal(w.document.querySelector('[data-filter="phone"]').getAttribute('aria-pressed'), 'true');
+  assert.equal(w.document.querySelector('[data-filter="all"]').getAttribute('aria-pressed'), 'false');
+});
+
+test('a harder example linked from the details page opens on the board', t => {
   const { dom, get } = open({ url: 'https://example.test/proposal/?case=C25#work-sample' }); t.after(() => dom.window.close());
-  assert.equal(get('scenario').value, 'C25');
-  assert.match(get('result-review').textContent, /checks failed/);
+  assert.equal(get('detail-title').textContent, 'Burning smell (message in Spanish)');
+  assert.match(get('detail-notes').textContent, /checks failed/);
   const ignored = open({ url: 'https://example.test/proposal/?case=nope' }); t.after(() => ignored.dom.window.close());
-  assert.equal(ignored.get('scenario').value, 'C01');
+  assert.equal(ignored.get('detail-title').textContent, 'Burning smell at the panel');
 });
 
-test('missing result file gives clearly labeled written examples', t => {
-  const { dom, get, choose } = open({ recorded: false }); t.after(() => dom.window.close());
-  assert.equal(get('scenario').value, 'commercial');
-  assert.match(get('demo-source').textContent, /Saved answers unavailable/);
-  assert.match(get('sample-note').textContent, /not a saved AI answer/);
-  assert.match(get('draft-label').textContent, /Example draft/);
-  choose('urgent'); assert.equal(get('copy-draft').hidden, true);
+test('without saved answers the board shows only written examples and says so', t => {
+  const { dom, get, ids } = open({ recorded: false }); t.after(() => dom.window.close());
+  assert.deepEqual(ids('urgent'), ['P1']);
+  assert.equal(get('triage-saved-note').hidden, false);
+  assert.equal(get('detail-kind').textContent, 'Written example');
 });
 
-test('details page shows test results and links harder examples to the main page', t => {
+test('details page shows test results and links harder examples to the board', t => {
   const { dom, get } = details(); t.after(() => dom.window.close());
   assert.equal(get('eval-grid').querySelector('strong').textContent, '39/40');
   const chips = [...get('case-chips').children];
-  const spanish = chips.find(el => /Spanish/.test(el.textContent));
-  assert.equal(spanish.getAttribute('href'), 'index.html?case=C25#work-sample');
-  assert.ok(chips.every(el => !/Commercial build-out|missing details|Urgent electrical/.test(el.textContent)));
-  assert.equal(get('hard-cases').hidden, false);
+  assert.equal(chips.find(el => /Spanish/.test(el.textContent)).getAttribute('href'), 'index.html?case=C25#work-sample');
+  const { dom: board, w } = open(); t.after(() => board.window.close());
+  for (const chip of chips) {
+    const id = new URL(chip.getAttribute('href'), 'https://x.test/').searchParams.get('case');
+    assert.ok(w.TriageBoard.items.includes(id), id + ' should be on the board');
+  }
 });
 
 test('worksheet renders losses, flags invalid input and recovers', t => {
@@ -115,16 +155,6 @@ test('worksheet renders losses, flags invalid input and recovers', t => {
   assert.equal(get('value-error').hidden, true);
 });
 
-test('copy preserves the exact saved draft and clipboard denial is understandable', async t => {
-  const { dom, w, get } = open(); t.after(() => dom.window.close());
-  get('copy-draft').click(); await new Promise(setImmediate);
-  assert.equal(w.copied, get('result-draft').textContent);
-  assert.match(get('copy-status').textContent, /Nothing has been sent/);
-  w.navigator.clipboard.writeText = async () => { throw new Error('denied'); };
-  get('copy-draft').click(); await new Promise(setImmediate);
-  assert.match(get('copy-status').textContent, /Select and copy this text/);
-});
-
 test('sharing strips the anchor and query and does not advertise a local preview', async t => {
   const remote = open({ url: 'https://example.test/proposal/?case=C25#plan' }); t.after(() => remote.dom.window.close());
   remote.get('share').click(); await Promise.resolve();
@@ -135,9 +165,10 @@ test('sharing strips the anchor and query and does not advertise a local preview
 });
 
 test('model text is inserted as text, including when it resembles HTML', t => {
-  const fixture = JSON.parse(read('eval-results.js').replace(/^[^{]*/, '').replace(/;?\s*$/, ''));
+  const fixture = savedResults();
   fixture.cases.find(row => row.id === 'C01').handoff.draft_reply = '<img src=x onerror=alert(1)>';
-  const { dom, get } = open({ results: fixture }); t.after(() => dom.window.close());
-  assert.equal(get('result-draft').textContent, '<img src=x onerror=alert(1)>');
-  assert.equal(get('result-draft').children.length, 0);
+  const { dom, get, click } = open({ results: fixture }); t.after(() => dom.window.close());
+  click('C01');
+  assert.equal(get('detail-draft').textContent, '<img src=x onerror=alert(1)>');
+  assert.equal(get('detail-draft').children.length, 0);
 });

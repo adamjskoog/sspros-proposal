@@ -547,3 +547,48 @@ input[type="range"] { width: 100%; accent-color: var(--forest); margin: .75rem 0
 .proposed-line { margin: 0 0 1rem; padding: 1rem 1.25rem; border-left: 4px solid var(--focus); background: var(--white); color: var(--ink); font-size: var(--support); }
 #review-example { margin-top: 3rem; }
 #review-example .review-grid { margin-top: 0; }
+
+/* Section 02 triage board */
+.triage-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem 2rem; margin-bottom: 1.5rem; }
+.triage-filters { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.triage-filters .label { margin-right: .5rem; }
+.triage-filters button { min-height: 3rem; padding: .5rem 1rem; border: 1px solid var(--line); border-radius: 999px; background: var(--white); font-size: var(--support); }
+.triage-filters button[aria-pressed="true"] { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.triage-note { font-size: var(--small); color: var(--muted); }
+.triage-note .text-button { padding: 0; min-height: 0; font-size: inherit; }
+.triage-urgent { border: 2px solid #b5532a; background: #fdf3ec; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+.triage-lanes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+.triage-lane { background: var(--white); border: 1px solid var(--line); padding: 1.25rem; }
+.triage-lane-head h3 { display: flex; align-items: center; gap: .625rem; font-size: 1.375rem; }
+.triage-urgent .triage-lane-head h3 { color: #79341c; }
+.triage-lane-head p { font-size: var(--small); margin-top: .25rem; }
+.triage-lane-head strong { color: var(--ink); }
+.triage-count { display: inline-flex; align-items: center; justify-content: center; min-width: 2rem; height: 2rem; padding: 0 .5rem; border-radius: 999px; background: var(--soft); color: var(--ink); font: 700 1rem/1 'DM Sans', sans-serif; }
+.triage-urgent .triage-count { background: #79341c; color: var(--white); }
+.triage-cards { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: .75rem; }
+.triage-urgent .triage-cards { grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+.triage-card { width: 100%; display: flex; flex-direction: column; gap: .375rem; padding: .875rem 1rem; border: 1px solid var(--line); border-left: 4px solid var(--forest); border-radius: 3px; background: var(--white); text-align: left; font-size: var(--support); line-height: 1.4; }
+.triage-urgent .triage-card { border-left-color: #b5532a; }
+.triage-card:hover { background: var(--soft); }
+.triage-card[aria-pressed="true"] { outline: 3px solid var(--ink); outline-offset: 0; }
+.triage-card-top { display: flex; justify-content: space-between; gap: .5rem; font-size: 1rem; color: var(--muted); }
+.triage-source { font-weight: 700; color: var(--forest); }
+.triage-status { font-size: 1rem; color: var(--muted); }
+.triage-status.done { color: var(--forest); font-weight: 700; }
+.triage-status.done::before { content: '✓ '; }
+.triage-empty { font-size: var(--small); margin-top: 1rem; }
+.triage-detail { margin-top: 2rem; background: #fbfcf7; border: 1px solid var(--line); padding: 2rem; }
+.triage-detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
+.triage-detail-head h3 { margin-top: .25rem; }
+.triage-detail-head p { font-size: var(--small); }
+#detail-panel-label.urgent { color: #79341c; }
+.triage-kind { background: var(--lime); color: var(--ink); padding: .375rem .75rem; font-size: var(--small); font-weight: 700; }
+.triage-kind.written { background: #f1ead4; color: #594413; }
+.triage-detail-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 2.5rem; margin-top: 1.5rem; }
+.triage-detail-grid blockquote { margin: .75rem 0 0; padding: 1.25rem; border-left: 4px solid var(--forest); background: var(--white); color: var(--ink); line-height: 1.6; }
+#detail-draft, #detail-notes { white-space: pre-line; }
+.triage-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.5rem; margin-top: 1.5rem; }
+.triage-actions .button:disabled { opacity: .55; cursor: default; }
+@media (max-width: 70rem) { .triage-lanes { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 55rem) { .triage-lanes, .triage-detail-grid { grid-template-columns: 1fr; gap: 1.25rem; } .triage-detail { padding: 1.25rem; } }
+@media print { .triage-toolbar, .triage-actions { display: none; } }
