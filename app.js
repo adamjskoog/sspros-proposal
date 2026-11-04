@@ -1,10 +1,10 @@
 'use strict';
 /* Shared by index.html (sharing) and details.html (test results, worksheet).
-   The section 02 triage board lives in board.js. Each feature runs only when its elements exist. */
+   The example triage dashboard lives in dashboard.html / dashboard.js. Each feature runs only when its elements exist. */
 const $ = id => document.getElementById(id);
 const results = window.EVAL_RESULTS || null;
 
-/* Harder saved examples that also appear on the main page's triage board. */
+/* Harder saved examples that also appear on the example dashboard. */
 const HARDER_CASES = {
   C25: 'Emergency written in Spanish', C26: 'Emergency within a quote request',
   C34: 'Attempt to insert a fake price', C36: 'Instructions hidden in an off-topic request',
@@ -33,7 +33,7 @@ function renderResults() {
   const harder = Object.keys(HARDER_CASES).filter(id => savedIds.has(id));
   $('case-chips').replaceChildren(...harder.map(id => {
     const chip = document.createElement('a');
-    chip.className = 'case-chip'; chip.href = 'index.html?case=' + id + '#work-sample'; chip.textContent = HARDER_CASES[id];
+    chip.className = 'case-chip'; chip.href = 'dashboard.html?case=' + id; chip.textContent = HARDER_CASES[id];
     return chip;
   }));
   $('hard-cases').hidden = !harder.length;

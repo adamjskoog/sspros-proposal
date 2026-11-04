@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#142c29">
+  <meta name="description" content="An example triage dashboard for System Solutions Pros: everything that comes in, sorted, with a person over every lane.">
+  <title>Triage dashboard · SSPros proposal</title>
+  <link rel="icon" href="mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="dashboard.css?v=1">
+  <script src="eval-results.js" defer></script>
+  <script src="sorter.js?v=1" defer></script>
+  <script src="dashboard-data.js?v=1" defer></script>
+  <script src="dashboard.js?v=1" defer></script>
+</head>
+<body class="dash-body">
+  <a class="skip-link" href="#board">Skip to the board</a>
+  <header class="dash-top">
+    <div class="dash-brand"><span class="mark" aria-hidden="true">s<span>p</span></span><div><strong>SSPros Triage</strong><span class="dash-pill">Example workspace</span></div></div>
+    <nav class="dash-actions" aria-label="Dashboard actions">
+      <button type="button" class="btn btn-primary" id="open-new"><span aria-hidden="true">+</span> New message</button>
+      <button type="button" class="btn" id="open-team">Team</button>
+      <button type="button" class="btn" id="open-how">How it works</button>
+      <a class="btn btn-quiet" href="index.html#work-sample">← Back to the proposal</a>
+    </nav>
+  </header>
+
+  <main id="dash">
+    <div class="dash-banner" role="note"><p><strong>This is an example.</strong> The messages and people are made up, nothing connects to company systems, and nothing is ever sent. Your changes stay in this browser. <button type="button" class="link-btn" id="reset">Reset the example</button></p></div>
+    <p class="dash-warning" id="saved-note" hidden>The saved AI answers couldn’t load, so only the written examples are shown.</p>
+
+    <section class="stats" aria-label="Summary">
+      <div class="stat stat-urgent"><span class="stat-label">Needs a person now</span><strong id="stat-urgent">0</strong><span class="stat-sub" id="stat-urgent-sub"></span></div>
+      <div class="stat"><span class="stat-label">Waiting on us</span><strong id="stat-us">0</strong><span class="stat-sub" id="stat-us-sub"></span></div>
+      <div class="stat"><span class="stat-label">Waiting on the customer</span><strong id="stat-customer">0</strong><span class="stat-sub">Reply approved, waiting to hear back</span></div>
+      <div class="stat"><span class="stat-label">Done</span><strong id="stat-done">0</strong><span class="stat-sub">Tick “Show done” to see them</span></div>
+    </section>
+
+    <section class="controls" aria-label="Find and filter">
+      <label class="search"><span class="visually-hidden">Search messages</span><input type="search" id="search" placeholder="Search messages or names  ( / )" autocomplete="off"></label>
+      <div class="chips" role="group" aria-label="Show messages from"><button type="button" data-source="website" aria-pressed="true">Website</button><button type="button" data-source="email" aria-pressed="true">Email</button><button type="button" data-source="phone" aria-pressed="true">Phone</button><button type="button" data-source="text" aria-pressed="true">Text</button></div>
+      <label class="toggle"><input type="checkbox" id="show-done"> Show done</label>
+      <span class="result-count" id="result-count" aria-live="polite"></span>
+    </section>
+
+    <div class="workspace">
+      <div class="board" id="board" tabindex="-1">
+        <section class="lane lane-urgent" aria-labelledby="h-urgent">
+          <header class="lane-head"><h2 id="h-urgent"><span aria-hidden="true">⚠</span> Needs a person now <span class="count" id="count-urgent">0</span></h2><p>Safety check + AI flag it. <strong id="lane-person-urgent">On-call lead</strong> calls back right away. No automatic replies.</p></header>
+          <ul class="cards cards-urgent" id="lane-urgent"></ul><p class="empty" id="empty-urgent" hidden>Nothing urgent. 👍</p>
+        </section>
+        <div class="lanes">
+          <section class="lane" aria-labelledby="h-electrical">
+            <header class="lane-head"><h2 id="h-electrical">Electrical <span class="count" id="count-electrical">0</span></h2><p>AI estimating helper prepares the details. <strong id="lane-person-electrical">Sam</strong> decides on the job.</p></header>
+            <ul class="cards" id="lane-electrical"></ul><p class="empty" id="empty-electrical" hidden>Nothing here right now.</p>
+          </section>
+          <section class="lane" aria-labelledby="h-comms">
+            <header class="lane-head"><h2 id="h-comms">Communications <span class="count" id="count-comms">0</span></h2><p>AI communications helper drafts replies. <strong id="lane-person-comms">Alex</strong> approves every reply.</p></header>
+            <ul class="cards" id="lane-comms"></ul><p class="empty" id="empty-comms" hidden>Nothing here right now.</p>
+          </section>
+          <section class="lane" aria-labelledby="h-web">
+            <header class="lane-head"><h2 id="h-web">Website <span class="count" id="count-web">0</span></h2><p>AI web helper spots website problems. <strong id="lane-person-web">Adam</strong> fixes them; the owner approves.</p></header>
+            <ul class="cards" id="lane-web"></ul><p class="empty" id="empty-web" hidden>Nothing here right now.</p>
+          </section>
+        </div>
+      </div>
+
+      <aside class="panel" id="panel" aria-labelledby="panel-title" hidden>
+        <div class="panel-head">
+          <div><span class="kind" id="panel-kind"></span><h2 id="panel-title" tabindex="-1"></h2><p id="panel-from"></p></div>
+          <button type="button" class="icon-btn" id="panel-close" aria-label="Close details">✕</button>
+        </div>
+        <div class="panel-body">
+          <section aria-labelledby="h-came-in"><h3 id="h-came-in">What came in</h3><blockquote id="panel-message"></blockquote></section>
+          <section aria-labelledby="h-prepared"><h3 id="h-prepared">What the AI helper prepared</h3>
+            <dl class="facts"><div><dt>What it’s about</dt><dd id="panel-service"></dd></div><div><dt>Where</dt><dd id="panel-location"></dd></div><div><dt>When</dt><dd id="panel-timing"></dd></div><div><dt>Still needed</dt><dd id="panel-missing"></dd></div></dl>
+            <div class="next"><span>Next step</span><p id="panel-next"></p></div>
+            <details class="why"><summary>Why it was sorted this way</summary><p id="panel-notes"></p></details>
+          </section>
+          <form class="panel-form" id="item-form" aria-labelledby="h-decide">
+            <h3 id="h-decide">A person decides</h3>
+            <div class="field-row">
+              <label>Assigned to<select id="f-assignee"></select></label>
+              <label>Lane<select id="f-lane"></select></label>
+              <label>Status<select id="f-status"></select></label>
+            </div>
+            <div id="draft-block"><label for="f-draft">Reply to the customer <span class="hint">Edit freely. Nothing is sent.</span></label><textarea id="f-draft" rows="5" maxlength="1200"></textarea></div>
+            <p class="no-draft" id="no-draft" hidden></p>
+            <div class="form-actions">
+              <button type="button" class="btn btn-primary" id="btn-approve">Approve reply</button>
+              <button type="button" class="btn btn-danger" id="btn-called" hidden>Mark as called back</button>
+              <button type="button" class="btn" id="btn-escalate">Needs a person now</button>
+            </div>
+          </form>
+          <form class="panel-form" id="note-form" aria-labelledby="h-notes">
+            <h3 id="h-notes">Team notes</h3>
+            <ul class="log notes" id="panel-note-list" hidden></ul>
+            <label for="f-note" class="visually-hidden">Add a note for the team</label>
+            <div class="note-row"><input id="f-note" type="text" maxlength="300" placeholder="Add a note for the team" autocomplete="off"><button type="submit" class="btn">Add</button></div>
+          </form>
+          <section aria-labelledby="h-history"><h3 id="h-history">History</h3><ol class="log" id="panel-log"></ol></section>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <dialog id="new-dialog" aria-labelledby="new-title">
+    <form id="new-form" novalidate>
+      <div class="dialog-head"><h2 id="new-title">New message</h2><button type="button" class="icon-btn" data-close aria-label="Close">✕</button></div>
+      <p class="dialog-lead">Type or paste a message the way a customer might send it. It’s sorted right here in your browser by a simple safety check: hazard words like “sparks” or “burning” go straight to a person.</p>
+      <div class="field-row">
+        <label>Came in by<select id="n-source"><option value="website">Website</option><option value="email">Email</option><option value="phone">Phone (voicemail)</option><option value="text">Text</option></select></label>
+        <label>From<input id="n-from" type="text" maxlength="80" autocomplete="off" placeholder="Customer name" aria-describedby="n-error"></label>
+      </div>
+      <label for="n-message">Message</label>
+      <textarea id="n-message" rows="5" maxlength="1000" aria-describedby="n-error" placeholder="e.g. Our garage outlet sparked when I plugged in the saw…"></textarea>
+      <p class="form-error" id="n-error" role="alert" hidden></p>
+      <div class="examples"><span>Try one:</span>
+        <button type="button" class="chip" data-example="phone|Linda (voicemail)|Hi, the outlet in our kitchen sparked and now there’s a burning smell. Please call me back.">Sparking outlet</button>
+        <button type="button" class="chip" data-example="email|Harbor Dental|We need a quote for four EV chargers at our office in Clearwater next month.">EV charger quote</button>
+        <button type="button" class="chip" data-example="text|Joe|Do you guys install generators? How much would one cost?">Vague question</button>
+        <button type="button" class="chip" data-example="website|A visitor|Your website’s contact page link is broken on my phone.">Website problem</button>
+      </div>
+      <div class="dialog-actions"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn btn-primary">Sort it</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="team-dialog" aria-labelledby="team-title">
+    <form id="team-form">
+      <div class="dialog-head"><h2 id="team-title">Your team</h2><button type="button" class="icon-btn" data-close aria-label="Close">✕</button></div>
+      <p class="dialog-lead">Put in real names to see the board with your own people. Saved in this browser only.</p>
+      <div class="team-fields" id="team-fields"></div>
+      <div class="dialog-actions"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn btn-primary">Save names</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="how-dialog" aria-labelledby="how-title" class="wide">
+    <div class="dialog-head"><h2 id="how-title">How it would work</h2><button type="button" class="icon-btn" data-close aria-label="Close">✕</button></div>
+    <ol class="flow">
+      <li><strong>Comes in</strong><span>Website form, email, voicemail (turned into text), or a text message.</span></li>
+      <li><strong>Safety check</strong><span>Simple rules look for hazard words in English and Spanish. If anything matches, it goes straight to a person. This runs even if the AI gets it wrong.</span></li>
+      <li><strong>AI helper prepares</strong><span>Pulls out what it’s about, where, and when; notes what’s missing; drafts a polite reply. It never sets prices, times, or safety advice.</span></li>
+      <li><strong>Sorted into a lane</strong><span>Electrical, Communications, or Website, each with a named person over it.</span></li>
+      <li><strong>A person decides</strong><span>Edits and approves the reply, reassigns, or escalates. Every step is logged.</span></li>
+      <li><strong>Goes out the usual way</strong><span>Approved replies go from your normal email or phone, not from the AI.</span></li>
+    </ol>
+    <div class="how-notes">
+      <p><strong>What’s real here:</strong> the website messages marked “Saved AI answer” are what the AI actually produced in testing (40 made-up messages; every emergency went to a person). Items marked “Written example” show how calls, emails, and texts would look.</p>
+      <p><strong>Before it touches real messages:</strong> we’d agree the rules with you, test on approved examples, and start with a person reviewing everything. We’d also check whether the software you already use can do part of this.</p>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn btn-primary" data-close>Got it</button></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>

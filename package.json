@@ -4,7 +4,7 @@
   "private": true,
   "engines": { "node": ">=22" },
   "scripts": {
-    "test": "node --test --test-isolation=none tests/proposal.test.cjs",
+    "test": "node --test --test-isolation=none tests/proposal.test.cjs tests/dashboard.test.cjs",
     "test:browser": "node tools/browser-qa.cjs"
   },
   "devDependencies": { "jsdom": "30.1.1", "playwright": "1.62.1" }
