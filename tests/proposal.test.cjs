@@ -8,19 +8,20 @@ const root = path.join(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const base = { requests: 20, manual: 10, assisted: 6, maintenance: 1, setup: 8, rate: 30, tools: 400 };
 const close = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} != ${expected}`);
-function open({ recorded = true, url = 'https://example.test/proposal/' } = {}) {
-  const dom = new JSDOM(read('index.html'), { runScripts: 'outside-only', url });
+function open({ page = 'index.html', recorded = true, url = 'https://example.test/proposal/', results } = {}) {
+  const dom = new JSDOM(read(page), { runScripts: 'outside-only', url });
   const w = dom.window;
   w.matchMedia = () => ({ matches: true });
-  w.HTMLElement.prototype.scrollIntoView = function () { w.scrolledTo = this.id; };
   Object.defineProperty(w.navigator, 'clipboard', { value: { writeText: async text => { w.copied = text; } } });
-  if (recorded) w.eval(read('eval-results.js'));
+  if (results) w.EVAL_RESULTS = results;
+  else if (recorded) w.eval(read('eval-results.js'));
   w.eval(read('value.js'));
   w.eval(read('app.js'));
   const get = id => w.document.getElementById(id);
   const choose = id => { get('scenario').value = id; get('scenario').dispatchEvent(new w.Event('change')); };
   return { dom, w, get, choose };
 }
+const details = (options = {}) => open({ page: 'details.html', url: 'https://example.test/proposal/details.html', ...options });
 
 test('worksheet includes review, monthly maintenance, first-month setup and tool spending', () => {
   const result = estimate(base);
@@ -44,57 +45,63 @@ test('worksheet rejects blank, absent, non-finite and out-of-range values', () =
   assert.ok(estimate({ ...base, tools: 0, setup: 0 }));
 });
 
-test('default commercial example displays the exact saved answer and separate review', t => {
+test('the commercial example shows the exact saved answer without a click', t => {
   const { dom, w, get } = open(); t.after(() => dom.window.close());
   assert.equal(get('scenario').value, 'C01');
-  assert.equal(get('demo-result').hidden, true);
-  get('prepare').click();
+  assert.equal(get('demo-result').hidden, false);
   const source = w.EVAL_RESULTS.cases.find(row => row.id === 'C01').handoff;
   for (const [id, field] of [['result-service','service_summary'],['result-timing','timing'],['result-action','next_action'],['result-draft','draft_reply']]) assert.equal(get(id).textContent, source[field]);
   assert.equal(get('review-example').hidden, false);
-  assert.match(get('draft-label').textContent, /SAVED DRAFT/);
-  assert.equal(get('eval-grid').querySelector('strong').textContent, '39/40');
+  assert.match(get('draft-label').textContent, /Saved draft/);
 });
 
-test('changing scenarios resets the result and exposes missing details', t => {
+test('changing examples updates the answer and shows missing details', t => {
   const { dom, get, choose } = open(); t.after(() => dom.window.close());
-  get('prepare').click(); choose('C18');
-  assert.equal(get('demo-result').hidden, true);
+  choose('C18');
   assert.equal(get('review-example').hidden, true);
-  get('prepare').click();
+  assert.match(get('sample-message').textContent, /generator/i);
   assert.match(get('result-missing').textContent, /location/);
   assert.equal(get('copy-draft').hidden, false);
 });
 
 test('urgent route has no customer draft or copy action', t => {
   const { dom, get, choose } = open(); t.after(() => dom.window.close());
-  choose('C21'); get('prepare').click();
+  choose('C21');
   assert.equal(get('copy-draft').hidden, true);
-  assert.match(get('result-draft').textContent, /No customer reply/);
-  assert.equal(get('result-owner').textContent, 'Human escalation');
+  assert.match(get('result-draft').textContent, /No reply was drafted/);
+  assert.equal(get('result-owner').textContent, 'A person, right away');
   assert.equal(get('review-badge').classList.contains('urgent'), true);
 });
 
-test('difficult case selection focuses the scenario and discloses the failed check', t => {
-  const { dom, w, get } = open(); t.after(() => dom.window.close());
-  [...get('case-chips').children].find(el => /Spanish/.test(el.textContent)).click();
+test('a harder example linked from the details page opens on the main page', t => {
+  const { dom, get } = open({ url: 'https://example.test/proposal/?case=C25#work-sample' }); t.after(() => dom.window.close());
   assert.equal(get('scenario').value, 'C25');
-  assert.equal(w.document.activeElement, get('scenario'));
-  assert.equal(w.scrolledTo, 'work-sample');
   assert.match(get('result-review').textContent, /checks failed/);
+  const ignored = open({ url: 'https://example.test/proposal/?case=nope' }); t.after(() => ignored.dom.window.close());
+  assert.equal(ignored.get('scenario').value, 'C01');
 });
 
-test('missing result file gives an explicit illustrative fallback', t => {
+test('missing result file gives clearly labeled written examples', t => {
   const { dom, get, choose } = open({ recorded: false }); t.after(() => dom.window.close());
   assert.equal(get('scenario').value, 'commercial');
-  assert.match(get('demo-source').textContent, /Recorded results unavailable/);
-  assert.match(get('sample-note').textContent, /not a recorded/);
-  get('prepare').click(); assert.match(get('draft-label').textContent, /ILLUSTRATIVE/);
-  choose('urgent'); get('prepare').click(); assert.equal(get('copy-draft').hidden, true);
+  assert.match(get('demo-source').textContent, /Saved answers unavailable/);
+  assert.match(get('sample-note').textContent, /not a saved AI answer/);
+  assert.match(get('draft-label').textContent, /Example draft/);
+  choose('urgent'); assert.equal(get('copy-draft').hidden, true);
+});
+
+test('details page shows test results and links harder examples to the main page', t => {
+  const { dom, get } = details(); t.after(() => dom.window.close());
+  assert.equal(get('eval-grid').querySelector('strong').textContent, '39/40');
+  const chips = [...get('case-chips').children];
+  const spanish = chips.find(el => /Spanish/.test(el.textContent));
+  assert.equal(spanish.getAttribute('href'), 'index.html?case=C25#work-sample');
+  assert.ok(chips.every(el => !/Commercial build-out|missing details|Urgent electrical/.test(el.textContent)));
+  assert.equal(get('hard-cases').hidden, false);
 });
 
 test('worksheet renders losses, flags invalid input and recovers', t => {
-  const { dom, w, get } = open(); t.after(() => dom.window.close());
+  const { dom, w, get } = details(); t.after(() => dom.window.close());
   assert.match(get('net-value').textContent, /-/);
   const input = get('requests'); input.value = '';
   input.dispatchEvent(new w.Event('input', { bubbles: true }));
@@ -110,7 +117,7 @@ test('worksheet renders losses, flags invalid input and recovers', t => {
 
 test('copy preserves the exact saved draft and clipboard denial is understandable', async t => {
   const { dom, w, get } = open(); t.after(() => dom.window.close());
-  get('prepare').click(); get('copy-draft').click(); await new Promise(setImmediate);
+  get('copy-draft').click(); await new Promise(setImmediate);
   assert.equal(w.copied, get('result-draft').textContent);
   assert.match(get('copy-status').textContent, /Nothing has been sent/);
   w.navigator.clipboard.writeText = async () => { throw new Error('denied'); };
@@ -118,8 +125,8 @@ test('copy preserves the exact saved draft and clipboard denial is understandabl
   assert.match(get('copy-status').textContent, /Select and copy this text/);
 });
 
-test('sharing strips the section anchor and does not advertise a local preview', async t => {
-  const remote = open({ url: 'https://example.test/proposal/#plan' }); t.after(() => remote.dom.window.close());
+test('sharing strips the anchor and query and does not advertise a local preview', async t => {
+  const remote = open({ url: 'https://example.test/proposal/?case=C25#plan' }); t.after(() => remote.dom.window.close());
   remote.get('share').click(); await Promise.resolve();
   assert.equal(remote.w.copied, 'https://example.test/proposal/');
   const local = open({ url: 'http://localhost:8000/#plan' }); t.after(() => local.dom.window.close());
@@ -127,26 +134,10 @@ test('sharing strips the section anchor and does not advertise a local preview',
   assert.match(local.get('share-status').textContent, /local preview/);
 });
 
-test('comparison controls update their pressed state and worksheet links open it', t => {
-  const { dom, w, get } = open(); t.after(() => dom.window.close());
-  const article = w.document.querySelector('.opp');
-  const buttons = article.querySelectorAll('.view-toggle button'); buttons[1].click();
-  assert.equal(article.dataset.view, 'proposed');
-  assert.equal(buttons[0].getAttribute('aria-pressed'), 'false');
-  assert.equal(buttons[1].getAttribute('aria-pressed'), 'true');
-  w.document.querySelector('a[href="#value-form"]').click();
-  assert.equal(get('value-panel').open, true);
-});
-
 test('model text is inserted as text, including when it resembles HTML', t => {
-  const { dom, w } = open(); t.after(() => dom.window.close());
-  // Exercise the public renderer with a separate fixture before app initialization.
-  const fixture = new JSDOM(read('index.html'), { runScripts: 'outside-only' }); t.after(() => fixture.window.close());
-  fixture.window.EVAL_RESULTS = JSON.parse(JSON.stringify(w.EVAL_RESULTS));
-  fixture.window.EVAL_RESULTS.cases.find(row => row.id === 'C01').handoff.draft_reply = '<img src=x onerror=alert(1)>';
-  fixture.window.eval(read('value.js')); fixture.window.eval(read('app.js'));
-  fixture.window.document.getElementById('prepare').click();
-  const draft = fixture.window.document.getElementById('result-draft');
-  assert.equal(draft.textContent, '<img src=x onerror=alert(1)>');
-  assert.equal(draft.children.length, 0);
+  const fixture = JSON.parse(read('eval-results.js').replace(/^[^{]*/, '').replace(/;?\s*$/, ''));
+  fixture.cases.find(row => row.id === 'C01').handoff.draft_reply = '<img src=x onerror=alert(1)>';
+  const { dom, get } = open({ results: fixture }); t.after(() => dom.window.close());
+  assert.equal(get('result-draft').textContent, '<img src=x onerror=alert(1)>');
+  assert.equal(get('result-draft').children.length, 0);
 });

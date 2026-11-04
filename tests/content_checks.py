@@ -45,7 +45,7 @@ for path, page in pages.items():
 index = (ROOT/'index.html').read_text(encoding='utf-8')
 protected = json.loads((ROOT/'tests/protected-content.json').read_text())
 for name, start, end in [
-    ('hero', '    <section class="hero', '    <nav class="scope-strip'),
+    ('hero', '    <section class="hero', '    <section id="opportunity"'),
     ('conversation', '    <section id="conversation"', '    <section id="resources"'),
 ]:
     section = index[index.index(start):index.index(end)]
